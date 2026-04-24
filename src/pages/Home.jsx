@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useFavourites } from "../hooks/useFavourites";
+import { fetchWeather } from "../lib/weather";
 import HeroSection from "../components/HeroSection";
 import LocationInput from "../components/LocationInput";
 import PubCard from "../components/PubCard";
@@ -80,17 +81,25 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
       model: "gemini_3_flash"
     });
 
-    setPubs(result.pubs || []);
+    const rawPubs = result.pubs || [];
     setSearchInfo({ location: result.location_name, weather: result.weather_summary });
 
-    if (result.pubs?.length > 0) {
-      const firstWithCoords = result.pubs.find(p => p.lat && p.lng);
-      if (firstWithCoords) {
-        setMapCenter([firstWithCoords.lat, firstWithCoords.lng]);
-      }
-    } else if (lat && lng) {
-      setMapCenter([lat, lng]);
+    // Fetch real weather once using the first available coordinates
+    const firstWithCoords = rawPubs.find(p => p.lat && p.lng);
+    const coordsForWeather = firstWithCoords
+      ? { lat: firstWithCoords.lat, lng: firstWithCoords.lng }
+      : lat && lng
+      ? { lat, lng }
+      : null;
+
+    let weatherData = null;
+    if (coordsForWeather) {
+      weatherData = await fetchWeather(coordsForWeather.lat, coordsForWeather.lng);
+      setMapCenter([coordsForWeather.lat, coordsForWeather.lng]);
     }
+
+    // Attach weather to every pub card
+    setPubs(rawPubs.map(pub => ({ ...pub, weather: weatherData })));
 
     setIsLoading(false);
   };

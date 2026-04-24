@@ -1,6 +1,7 @@
 import { MapPin, Clock, Star, ExternalLink, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import SunBadge from "./SunBadge";
+import WeatherStrip from "./WeatherStrip";
 import { motion } from "framer-motion";
 
 export default function PubCard({ pub, index, isFavourite, onToggleFavourite }) {
@@ -58,6 +59,7 @@ export default function PubCard({ pub, index, isFavourite, onToggleFavourite }) 
               </div>
             )}
           </div>
+          <WeatherStrip weather={pub.weather} />
           {pub.google_maps_url && (
             <a
               href={pub.google_maps_url}
