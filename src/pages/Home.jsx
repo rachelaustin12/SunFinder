@@ -1,12 +1,14 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
+import { useFavourites } from "../hooks/useFavourites";
 import HeroSection from "../components/HeroSection";
 import LocationInput from "../components/LocationInput";
 import PubCard from "../components/PubCard";
 import PubMap from "../components/PubMap";
 import LoadingState from "../components/LoadingState";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutGrid, Map, Sun, CloudSun, Cloud } from "lucide-react";
+import { LayoutGrid, Map, Sun, CloudSun, Cloud, Heart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -17,6 +19,7 @@ export default function Home() {
   const [mapCenter, setMapCenter] = useState(null);
   const [filter, setFilter] = useState("all");
   const [searchInfo, setSearchInfo] = useState(null);
+  const { favourites, isFavourite, toggleFavourite } = useFavourites();
 
   const handleSearch = async ({ lat, lng, text }) => {
     setIsLoading(true);
@@ -119,6 +122,12 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
                     {searchInfo.location}
                   </h2>
                   <p className="text-sm text-muted-foreground mt-1">{searchInfo.weather}</p>
+                  {favourites.length > 0 && (
+                    <Link to="/my-sunny-spots" className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium text-primary hover:text-accent transition-colors">
+                      <Heart className="w-3.5 h-3.5 fill-primary" />
+                      View My Sunny Spots ({favourites.length})
+                    </Link>
+                  )}
                 </div>
               )}
 
@@ -171,7 +180,7 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
               {view === "grid" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
                   {filteredPubs.map((pub, i) => (
-                    <PubCard key={i} pub={pub} index={i} />
+                    <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} />
                   ))}
                   {filteredPubs.length === 0 && (
                     <div className="col-span-full text-center py-12 text-muted-foreground">
@@ -184,9 +193,9 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
                   <PubMap pubs={filteredPubs} center={mapCenter} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                     {filteredPubs.map((pub, i) => (
-                      <PubCard key={i} pub={pub} index={i} />
+                      <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} />
                     ))}
-                  </div>
+                    </div>
                 </div>
               )}
             </motion.div>

@@ -1,9 +1,9 @@
-import { MapPin, Clock, Star, ExternalLink } from "lucide-react";
+import { MapPin, Clock, Star, ExternalLink, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import SunBadge from "./SunBadge";
 import { motion } from "framer-motion";
 
-export default function PubCard({ pub, index }) {
+export default function PubCard({ pub, index, isFavourite, onToggleFavourite }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -21,6 +21,17 @@ export default function PubCard({ pub, index }) {
           <div className="absolute top-3 right-3">
             <SunBadge status={pub.sun_status} />
           </div>
+          {onToggleFavourite && (
+            <button
+              onClick={(e) => { e.stopPropagation(); onToggleFavourite(pub); }}
+              className="absolute top-3 left-3 p-2 rounded-full bg-black/30 backdrop-blur-sm transition-all hover:scale-110"
+              title={isFavourite ? "Remove from My Sunny Spots" : "Save to My Sunny Spots"}
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${isFavourite ? "fill-red-500 text-red-500" : "text-white"}`}
+              />
+            </button>
+          )}
           {pub.rating && (
             <div className="absolute bottom-3 right-3 flex items-center gap-1 bg-black/40 backdrop-blur-sm text-white rounded-full px-2.5 py-1 text-xs font-medium">
               <Star className="w-3 h-3 fill-primary text-primary" />
