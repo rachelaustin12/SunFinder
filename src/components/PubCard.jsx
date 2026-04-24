@@ -4,7 +4,7 @@ import SunBadge from "./SunBadge";
 import WeatherStrip from "./WeatherStrip";
 import { motion } from "framer-motion";
 
-export default function PubCard({ pub, index, isFavourite, onToggleFavourite }) {
+export default function PubCard({ pub, index, isFavourite, onToggleFavourite, weather, isLoadingWeather }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -59,7 +59,7 @@ export default function PubCard({ pub, index, isFavourite, onToggleFavourite }) 
               </div>
             )}
           </div>
-          <WeatherStrip weather={pub.weather} />
+          <WeatherStrip weather={weather} isLoading={isLoadingWeather} />
           {pub.google_maps_url && (
             <a
               href={pub.google_maps_url}

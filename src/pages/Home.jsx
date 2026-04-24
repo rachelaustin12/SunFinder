@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useFavourites } from "../hooks/useFavourites";
-import { fetchWeather } from "../lib/weather";
+import { useWeather } from "../hooks/useWeather";
 import HeroSection from "../components/HeroSection";
 import LocationInput from "../components/LocationInput";
 import PubCard from "../components/PubCard";
@@ -21,6 +21,7 @@ export default function Home() {
   const [filter, setFilter] = useState("all");
   const [searchInfo, setSearchInfo] = useState(null);
   const { favourites, isFavourite, toggleFavourite } = useFavourites();
+  const { getWeather, isLoadingWeather } = useWeather(pubs);
 
   const handleSearch = async ({ lat, lng, text }) => {
     setIsLoading(true);
@@ -81,25 +82,17 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
       model: "gemini_3_flash"
     });
 
-    const rawPubs = result.pubs || [];
+    setPubs(result.pubs || []);
     setSearchInfo({ location: result.location_name, weather: result.weather_summary });
 
-    // Fetch real weather once using the first available coordinates
-    const firstWithCoords = rawPubs.find(p => p.lat && p.lng);
-    const coordsForWeather = firstWithCoords
-      ? { lat: firstWithCoords.lat, lng: firstWithCoords.lng }
-      : lat && lng
-      ? { lat, lng }
-      : null;
-
-    let weatherData = null;
-    if (coordsForWeather) {
-      weatherData = await fetchWeather(coordsForWeather.lat, coordsForWeather.lng);
-      setMapCenter([coordsForWeather.lat, coordsForWeather.lng]);
+    if (result.pubs?.length > 0) {
+      const firstWithCoords = result.pubs.find(p => p.lat && p.lng);
+      if (firstWithCoords) {
+        setMapCenter([firstWithCoords.lat, firstWithCoords.lng]);
+      }
+    } else if (lat && lng) {
+      setMapCenter([lat, lng]);
     }
-
-    // Attach weather to every pub card
-    setPubs(rawPubs.map(pub => ({ ...pub, weather: weatherData })));
 
     setIsLoading(false);
   };
@@ -189,7 +182,7 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
               {view === "grid" ? (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
                   {filteredPubs.map((pub, i) => (
-                    <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} />
+                    <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} weather={getWeather(pub)} isLoadingWeather={isLoadingWeather} />
                   ))}
                   {filteredPubs.length === 0 && (
                     <div className="col-span-full text-center py-12 text-muted-foreground">
@@ -202,7 +195,7 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
                   <PubMap pubs={filteredPubs} center={mapCenter} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                     {filteredPubs.map((pub, i) => (
-                      <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} />
+                      <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} weather={getWeather(pub)} isLoadingWeather={isLoadingWeather} />
                     ))}
                     </div>
                 </div>
