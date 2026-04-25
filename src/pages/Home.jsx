@@ -76,7 +76,10 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
                 lat: { type: "number" },
                 lng: { type: "number" },
                 google_maps_url: { type: "string" },
-                image_url: { type: "string" }
+                image_url: { type: "string" },
+                dog_friendly: { type: "boolean", description: "Is the pub dog friendly?" },
+                wheelchair_accessible: { type: "boolean", description: "Is the pub wheelchair accessible?" },
+                dietary_options: { type: "array", items: { type: "string", enum: ["vegan", "vegetarian", "gluten-free", "halal"] }, description: "Dietary options available" }
               }
             }
           }

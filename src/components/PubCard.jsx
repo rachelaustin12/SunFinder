@@ -1,4 +1,4 @@
-import { MapPin, Clock, Star, ExternalLink, Heart } from "lucide-react";
+import { MapPin, Clock, Star, ExternalLink, Heart, Dog, PersonStanding, Leaf } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import SunBadge from "./SunBadge";
 import WeatherStrip from "./WeatherStrip";
@@ -61,6 +61,27 @@ export default function PubCard({ pub, index, isFavourite, onToggleFavourite, we
             )}
           </div>
           <WeatherStrip weather={weather} isLoading={isLoadingWeather} />
+          {/* Amenity badges */}
+          {(pub.dog_friendly || pub.wheelchair_accessible || pub.dietary_options?.length > 0) && (
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {pub.dog_friendly && (
+                <span className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 border border-amber-200 rounded-full px-2.5 py-1 font-medium">
+                  <Dog className="w-3 h-3" /> Dogs welcome
+                </span>
+              )}
+              {pub.wheelchair_accessible && (
+                <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-2.5 py-1 font-medium">
+                  <PersonStanding className="w-3 h-3" /> Wheelchair friendly
+                </span>
+              )}
+              {pub.dietary_options?.map((opt) => (
+                <span key={opt} className="inline-flex items-center gap-1 text-xs bg-green-50 text-green-700 border border-green-200 rounded-full px-2.5 py-1 font-medium capitalize">
+                  <Leaf className="w-3 h-3" /> {opt}
+                </span>
+              ))}
+            </div>
+          )}
+
           {(pub.google_maps_url || (pub.lat && pub.lng)) && (
             <div className="mt-4 flex items-center gap-3">
               {pub.google_maps_url && (
