@@ -61,16 +61,31 @@ export default function PubCard({ pub, index, isFavourite, onToggleFavourite, we
             )}
           </div>
           <WeatherStrip weather={weather} isLoading={isLoadingWeather} />
-          {pub.google_maps_url && (
-            <a
-              href={pub.google_maps_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-accent transition-colors"
-            >
-              Get directions
-              <ExternalLink className="w-3 h-3" />
-            </a>
+          {(pub.google_maps_url || (pub.lat && pub.lng)) && (
+            <div className="mt-4 flex items-center gap-3">
+              {pub.google_maps_url && (
+                <a
+                  href={pub.google_maps_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-accent transition-colors"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Google Maps
+                </a>
+              )}
+              {pub.lat && pub.lng && (
+                <a
+                  href={`https://waze.com/ul?ll=${pub.lat},${pub.lng}&navigate=yes`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-primary hover:text-accent transition-colors"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                  Waze
+                </a>
+              )}
+            </div>
           )}
           <PubReviews pub={pub} />
         </CardContent>
