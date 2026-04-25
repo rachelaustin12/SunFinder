@@ -1,0 +1,39 @@
+{
+  "name": "Review",
+  "type": "object",
+  "properties": {
+    "pub_name": {
+      "type": "string",
+      "description": "Name of the pub being reviewed"
+    },
+    "pub_address": {
+      "type": "string",
+      "description": "Address of the pub being reviewed"
+    },
+    "rating": {
+      "type": "number",
+      "description": "Star rating 1-5"
+    },
+    "comment": {
+      "type": "string",
+      "description": "Short review comment"
+    },
+    "photo_url": {
+      "type": "string",
+      "description": "URL of uploaded photo"
+    },
+    "reviewer_name": {
+      "type": "string",
+      "description": "Display name of reviewer"
+    },
+    "sun_rating": {
+      "type": "number",
+      "description": "How sunny was it? 1-5"
+    }
+  },
+  "required": [
+    "pub_name",
+    "pub_address",
+    "rating"
+  ]
+}

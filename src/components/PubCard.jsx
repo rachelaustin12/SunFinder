@@ -2,6 +2,7 @@ import { MapPin, Clock, Star, ExternalLink, Heart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import SunBadge from "./SunBadge";
 import WeatherStrip from "./WeatherStrip";
+import PubReviews from "./PubReviews";
 import { motion } from "framer-motion";
 
 export default function PubCard({ pub, index, isFavourite, onToggleFavourite, weather, isLoadingWeather }) {
@@ -71,6 +72,7 @@ export default function PubCard({ pub, index, isFavourite, onToggleFavourite, we
               <ExternalLink className="w-3 h-3" />
             </a>
           )}
+          <PubReviews pub={pub} />
         </CardContent>
       </Card>
     </motion.div>
