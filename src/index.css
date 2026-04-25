@@ -87,5 +87,15 @@
 
   body {
     @apply bg-background text-foreground font-sans;
+    overscroll-behavior: none;
+  }
+
+  button, a, [role="button"] {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  svg {
+    user-select: none;
   }
 }

@@ -7,10 +7,21 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
 import MySunnySpots from './pages/MySunnySpots';
+import AppShell from './components/AppShell';
+import { useEffect } from 'react';
 // Add page imports here
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+
+  // Auto dark mode based on system preference
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const apply = (e) => document.documentElement.classList.toggle('dark', e.matches);
+    apply(mq);
+    mq.addEventListener('change', apply);
+    return () => mq.removeEventListener('change', apply);
+  }, []);
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -34,11 +45,13 @@ const AuthenticatedApp = () => {
 
   // Render the main app
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/my-sunny-spots" element={<MySunnySpots />} />
-      <Route path="*" element={<PageNotFound />} />
-    </Routes>
+    <AppShell>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/my-sunny-spots" element={<MySunnySpots />} />
+        <Route path="*" element={<PageNotFound />} />
+      </Routes>
+    </AppShell>
   );
 };
 

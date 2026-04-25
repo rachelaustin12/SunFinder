@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { base44 } from "@/api/base44Client";
 import { useFavourites } from "../hooks/useFavourites";
 import { useWeather } from "../hooks/useWeather";
+import { usePullToRefresh } from "../hooks/usePullToRefresh";
 import HeroSection from "../components/HeroSection";
 import LocationInput from "../components/LocationInput";
 import TimeSlider from "../components/TimeSlider";
@@ -24,6 +25,15 @@ export default function Home() {
   const [selectedHour, setSelectedHour] = useState(null); // null = use current time
   const { favourites, isFavourite, toggleFavourite } = useFavourites();
   const { getWeather, isLoadingWeather } = useWeather(pubs);
+
+  const handlePullRefresh = useCallback(() => {
+    if (hasSearched && !isLoading) {
+      setPubs([]);
+      setHasSearched(false);
+    }
+  }, [hasSearched, isLoading]);
+
+  const { pulling, distance, threshold } = usePullToRefresh(handlePullRefresh, hasSearched && !isLoading);
 
   const handleSearch = async ({ lat, lng, text }) => {
     setIsLoading(true);
@@ -107,6 +117,15 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Pull-to-refresh indicator */}
+      {distance > 0 && (
+        <div
+          className="flex items-center justify-center text-xs text-muted-foreground transition-all"
+          style={{ height: distance, overflow: "hidden" }}
+        >
+          {pulling ? "↑ Release to refresh" : "↓ Pull to refresh"}
+        </div>
+      )}
       <div className="max-w-6xl mx-auto px-4">
         <HeroSection />
 

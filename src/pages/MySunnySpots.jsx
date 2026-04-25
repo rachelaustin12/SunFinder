@@ -11,21 +11,16 @@ export default function MySunnySpots() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground flex items-center gap-3">
-              <Heart className="w-8 h-8 text-primary fill-primary" />
-              My Sunny Spots
-            </h1>
-            <p className="text-muted-foreground mt-1 text-sm">
-              {favourites.length === 0
-                ? "No saved spots yet"
-                : `${favourites.length} pub garden${favourites.length !== 1 ? "s" : ""} saved`}
-            </p>
-          </div>
-          <Link to="/">
-            <Button variant="outline">← Back to search</Button>
-          </Link>
+        <div className="mb-8">
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground flex items-center gap-3">
+            <Heart className="w-8 h-8 text-primary fill-primary" />
+            My Sunny Spots
+          </h1>
+          <p className="text-muted-foreground mt-1 text-sm">
+            {favourites.length === 0
+              ? "No saved spots yet"
+              : `${favourites.length} pub garden${favourites.length !== 1 ? "s" : ""} saved`}
+          </p>
         </div>
 
         {favourites.length === 0 ? (
