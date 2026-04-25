@@ -5,6 +5,7 @@ import { useFavourites } from "../hooks/useFavourites";
 import { useWeather } from "../hooks/useWeather";
 import HeroSection from "../components/HeroSection";
 import LocationInput from "../components/LocationInput";
+import TimeSlider from "../components/TimeSlider";
 import PubCard from "../components/PubCard";
 import PubMap from "../components/PubMap";
 import LoadingState from "../components/LoadingState";
@@ -20,6 +21,7 @@ export default function Home() {
   const [mapCenter, setMapCenter] = useState(null);
   const [filter, setFilter] = useState("all");
   const [searchInfo, setSearchInfo] = useState(null);
+  const [selectedHour, setSelectedHour] = useState(null); // null = use current time
   const { favourites, isFavourite, toggleFavourite } = useFavourites();
   const { getWeather, isLoadingWeather } = useWeather(pubs);
 
@@ -29,7 +31,8 @@ export default function Home() {
     setPubs([]);
 
     const now = new Date();
-    const timeStr = now.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+    const hour = selectedHour !== null ? selectedHour : now.getHours();
+    const timeStr = `${String(hour).padStart(2, "0")}:00`;
     const dateStr = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
     const locationStr = text || `latitude ${lat}, longitude ${lng}`;
@@ -106,6 +109,7 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
 
         <div className="pb-8">
           <LocationInput onSearch={handleSearch} isLoading={isLoading} />
+          <TimeSlider value={selectedHour} onChange={setSelectedHour} />
         </div>
 
         {isLoading && <LoadingState />}
