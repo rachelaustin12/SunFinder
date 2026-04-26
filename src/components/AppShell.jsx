@@ -1,11 +1,16 @@
-import { Link, useLocation } from "react-router-dom";
-import { Sun, Heart, Settings } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Sun, Heart, Settings, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import SettingsSheet from "./SettingsSheet";
 
+const MAIN_ROUTES = ["/", "/my-sunny-spots"];
+
 export default function AppShell({ children }) {
   const location = useLocation();
+  const navigate = useNavigate();
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const isMainRoute = MAIN_ROUTES.includes(location.pathname);
 
   const tabs = [
     { path: "/", label: "Search", icon: Sun },
@@ -19,13 +24,24 @@ export default function AppShell({ children }) {
         className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border/60 flex items-center justify-between px-4"
         style={{ paddingTop: "env(safe-area-inset-top)", height: "calc(56px + env(safe-area-inset-top))" }}
       >
-        <Link to="/" className="flex items-center gap-2 select-none">
-          <Sun className="w-6 h-6 text-primary animate-pulse-glow" />
-          <span className="font-display font-bold text-lg text-foreground">Where's The Sun?</span>
-        </Link>
+        {isMainRoute ? (
+          <Link to="/" className="flex items-center gap-2 select-none">
+            <Sun className="w-6 h-6 text-primary animate-pulse-glow" />
+            <span className="font-display font-bold text-lg text-foreground">Where's The Sun?</span>
+          </Link>
+        ) : (
+          <button
+            onClick={() => navigate(-1)}
+            className="flex items-center gap-1.5 select-none text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span className="text-sm font-medium">Back</span>
+          </button>
+        )}
         <button
           onClick={() => setSettingsOpen(true)}
-          className="p-2 rounded-full hover:bg-muted transition-colors select-none tap-highlight-none"
+          className="p-2 rounded-full hover:bg-muted transition-colors select-none"
           aria-label="Settings"
         >
           <Settings className="w-5 h-5 text-muted-foreground" />

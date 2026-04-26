@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import StarPicker from "./StarPicker";
 import { ImagePlus, Loader2, X } from "lucide-react";
 
-export default function ReviewForm({ pub, onSubmitted, onCancel }) {
+export default function ReviewForm({ pub, onOptimistic, onSubmitted, onCancel }) {
   const [rating, setRating] = useState(0);
   const [sunRating, setSunRating] = useState(0);
   const [comment, setComment] = useState("");
@@ -26,6 +26,20 @@ export default function ReviewForm({ pub, onSubmitted, onCancel }) {
     e.preventDefault();
     if (rating === 0) return;
     setIsSaving(true);
+
+    const optimistic = {
+      id: `optimistic-${Date.now()}`,
+      pub_name: pub.name,
+      pub_address: pub.address,
+      rating,
+      sun_rating: sunRating || null,
+      comment: comment.trim() || null,
+      reviewer_name: reviewerName.trim() || "Anonymous",
+      photo_url: photoPreview,
+      created_date: new Date().toISOString(),
+      pending: true,
+    };
+    onOptimistic?.(optimistic);
 
     let photo_url = null;
     if (photoFile) {

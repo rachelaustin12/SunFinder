@@ -1,7 +1,7 @@
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import MySunnySpots from './pages/MySunnySpots';
 import AppShell from './components/AppShell';
 import { useEffect } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -43,18 +44,33 @@ const AuthenticatedApp = () => {
     }
   }
 
-  // Render the main app
-  return (
-    <AppShell>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/my-sunny-spots" element={<MySunnySpots />} />
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
-    </AppShell>
-  );
+  // Render the main app — needs location for AnimatePresence key
+  return <AnimatedRoutes />;
 };
 
+
+const pageVariants = {
+  initial: { opacity: 0, x: 24 },
+  animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: "easeOut" } },
+  exit: { opacity: 0, x: -24, transition: { duration: 0.18, ease: "easeIn" } },
+};
+
+function AnimatedRoutes() {
+  const location = useLocation();
+  return (
+    <AppShell>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit" style={{ minHeight: "100%" }}>
+          <Routes location={location}>
+            <Route path="/" element={<Home />} />
+            <Route path="/my-sunny-spots" element={<MySunnySpots />} />
+            <Route path="*" element={<PageNotFound />} />
+          </Routes>
+        </motion.div>
+      </AnimatePresence>
+    </AppShell>
+  );
+}
 
 function App() {
 

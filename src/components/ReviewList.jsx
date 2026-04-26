@@ -12,7 +12,7 @@ function StarDisplay({ value }) {
   );
 }
 
-export default function ReviewList({ pub }) {
+export default function ReviewList({ pub, optimisticReviews = [] }) {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -24,15 +24,20 @@ export default function ReviewList({ pub }) {
     ).then((r) => { setReviews(r); setLoading(false); });
   }, [pub.name, pub.address]);
 
-  if (loading) return <p className="text-xs text-muted-foreground py-2">Loading reviews...</p>;
-  if (reviews.length === 0) return <p className="text-xs text-muted-foreground py-2">No reviews yet. Be the first!</p>;
+  const allReviews = [...optimisticReviews, ...reviews];
+
+  if (loading && optimisticReviews.length === 0) return <p className="text-xs text-muted-foreground py-2">Loading reviews...</p>;
+  if (allReviews.length === 0) return <p className="text-xs text-muted-foreground py-2">No reviews yet. Be the first!</p>;
 
   return (
     <div className="space-y-4 mt-2">
-      {reviews.map((r) => (
-        <div key={r.id} className="border-t border-border/40 pt-3 space-y-1.5">
+      {allReviews.map((r) => (
+        <div key={r.id} className={`border-t border-border/40 pt-3 space-y-1.5 ${r.pending ? "opacity-60" : ""}`}>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-foreground">{r.reviewer_name}</span>
+            <span className="text-xs font-semibold text-foreground">
+              {r.reviewer_name}
+              {r.pending && <span className="ml-1.5 text-muted-foreground font-normal">(posting…)</span>}
+            </span>
             <span className="text-xs text-muted-foreground">{new Date(r.created_date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
           </div>
           <div className="flex items-center gap-3">

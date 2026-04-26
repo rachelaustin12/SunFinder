@@ -6,10 +6,16 @@ import ReviewList from "./ReviewList";
 
 export default function PubReviews({ pub }) {
   const [showForm, setShowForm] = useState(false);
+  const [optimisticReviews, setOptimisticReviews] = useState([]);
   const [refreshKey, setRefreshKey] = useState(0);
+
+  const handleOptimistic = (review) => {
+    setOptimisticReviews((prev) => [review, ...prev]);
+  };
 
   const handleSubmitted = () => {
     setShowForm(false);
+    setOptimisticReviews([]);
     setRefreshKey((k) => k + 1);
   };
 
@@ -28,10 +34,15 @@ export default function PubReviews({ pub }) {
       </div>
 
       {showForm && (
-        <ReviewForm pub={pub} onSubmitted={handleSubmitted} onCancel={() => setShowForm(false)} />
+        <ReviewForm
+          pub={pub}
+          onOptimistic={handleOptimistic}
+          onSubmitted={handleSubmitted}
+          onCancel={() => setShowForm(false)}
+        />
       )}
 
-      <ReviewList key={refreshKey} pub={pub} />
+      <ReviewList key={refreshKey} pub={pub} optimisticReviews={optimisticReviews} />
     </div>
   );
 }

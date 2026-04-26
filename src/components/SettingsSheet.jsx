@@ -1,19 +1,30 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "@/lib/AuthContext";
+import { base44 } from "@/api/base44Client";
 
 export default function SettingsSheet({ open, onClose }) {
   const [confirming, setConfirming] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const { user } = useAuth();
 
-  const handleDeleteAccount = () => {
+  const handleDeleteAccount = async () => {
     if (!confirming) {
       setConfirming(true);
       return;
     }
-    // Clear all local data
+    setIsDeleting(true);
+    try {
+      if (user) {
+        await base44.entities.User.delete(user.id);
+      }
+    } catch (_) {
+      // best-effort — proceed regardless
+    }
     localStorage.clear();
-    window.location.reload();
+    base44.auth.logout("/");
   };
 
   return (
@@ -34,6 +45,7 @@ export default function SettingsSheet({ open, onClose }) {
                   size="sm"
                   className="w-full"
                   onClick={handleDeleteAccount}
+                  disabled={isDeleting}
                 >
                   <Trash2 className="w-4 h-4 mr-2" />
                   Delete Account Data
@@ -42,8 +54,11 @@ export default function SettingsSheet({ open, onClose }) {
                 <div className="space-y-2">
                   <p className="text-sm text-destructive font-medium text-center">Are you sure? This clears all your saved spots and data.</p>
                   <div className="flex gap-2">
-                    <Button variant="outline" size="sm" className="flex-1" onClick={() => setConfirming(false)}>Cancel</Button>
-                    <Button variant="destructive" size="sm" className="flex-1" onClick={handleDeleteAccount}>Yes, delete</Button>
+                    <Button variant="outline" size="sm" className="flex-1" onClick={() => setConfirming(false)} disabled={isDeleting}>Cancel</Button>
+                    <Button variant="destructive" size="sm" className="flex-1" onClick={handleDeleteAccount} disabled={isDeleting}>
+                      {isDeleting ? <Loader2 className="w-3.5 h-3.5 animate-spin mr-1" /> : null}
+                      Yes, delete
+                    </Button>
                   </div>
                 </div>
               )}
