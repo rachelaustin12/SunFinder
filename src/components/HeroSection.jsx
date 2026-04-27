@@ -21,7 +21,8 @@ export default function HeroSection() {
         transition={{ delay: 0.15, duration: 0.6 }}
         className="font-display text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-tight"
       >
-        <span className="text-primary">Sun</span> Tracker
+        Where's
+        <span className="text-primary"> The Sun?</span>
       </motion.h1>
       <motion.p
         initial={{ opacity: 0 }}
@@ -29,7 +30,7 @@ export default function HeroSection() {
         transition={{ delay: 0.3, duration: 0.6 }}
         className="mt-4 text-muted-foreground text-base md:text-lg max-w-md mx-auto leading-relaxed"
       >
-        Finding the sunniest spots to grab a drink and some rays. 😎
+        Discover which pub gardens near you are basking in sunshine right now.
       </motion.p>
     </div>
   );
