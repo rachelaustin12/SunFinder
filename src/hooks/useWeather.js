@@ -25,7 +25,7 @@ export function useWeather(pubs) {
 
     const fetches = Object.values(uniqueCoords).map(({ lat, lng, key }) =>
       fetch(
-        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,precipitation_probability,weather_code&timezone=auto&forecast_days=1`
+        `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lng}&current=temperature_2m,precipitation_probability,weather_code,uv_index&timezone=auto&forecast_days=1`
       )
         .then(r => r.json())
         .then(data => ({
@@ -33,8 +33,9 @@ export function useWeather(pubs) {
           temp: Math.round(data.current?.temperature_2m ?? null),
           precipitation_probability: data.current?.precipitation_probability ?? null,
           weather_code: data.current?.weather_code ?? null,
+          uv_index: data.current?.uv_index ?? null,
         }))
-        .catch(() => ({ key, temp: null, precipitation_probability: null }))
+        .catch(() => ({ key, temp: null, precipitation_probability: null, uv_index: null }))
     );
 
     Promise.all(fetches).then(results => {
