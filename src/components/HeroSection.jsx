@@ -21,8 +21,7 @@ export default function HeroSection() {
         transition={{ delay: 0.15, duration: 0.6 }}
         className="font-display text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-tight"
       >
-        Where's
-        <span className="text-primary"> The Sun?</span>
+        <span className="text-primary">Sun</span> Tracker
       </motion.h1>
       <motion.p
         initial={{ opacity: 0 }}
