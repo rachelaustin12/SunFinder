@@ -29,7 +29,7 @@ export default function HeroSection() {
         transition={{ delay: 0.3, duration: 0.6 }}
         className="mt-4 text-muted-foreground text-base md:text-lg max-w-md mx-auto leading-relaxed"
       >
-        No shade thrown—just finding the sunniest spots to grab a pint and some rays.
+        Finding the sunniest spots to grab a drink and some rays. 😎
       </motion.p>
     </div>
   );
