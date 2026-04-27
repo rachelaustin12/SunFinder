@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Sun, Heart, Settings, ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import SettingsSheet from "./SettingsSheet";
+import Footer from "./Footer";
 
 const MAIN_ROUTES = ["/", "/my-sunny-spots"];
 
@@ -57,6 +58,7 @@ export default function AppShell({ children }) {
         }}>
         
         {children}
+        <Footer />
       </main>
 
       {/* Fixed Bottom Nav */}
