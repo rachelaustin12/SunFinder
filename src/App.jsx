@@ -8,6 +8,7 @@ import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Home from './pages/Home';
 import MySunnySpots from './pages/MySunnySpots';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Leaderboard from './pages/Leaderboard';
 import AppShell from './components/AppShell';
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -66,6 +67,7 @@ function AnimatedRoutes() {
             <Route path="/" element={<Home />} />
             <Route path="/my-sunny-spots" element={<MySunnySpots />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
+            <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </motion.div>

@@ -23,6 +23,7 @@ export default function Home() {
   const [filter, setFilter] = useState("all");
   const [searchInfo, setSearchInfo] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null); // null = use current time
+  const [selectedDate, setSelectedDate] = useState(null); // null = use today
   const { favourites, isFavourite, toggleFavourite } = useFavourites();
   const { getWeather, isLoadingWeather } = useWeather(pubs);
 
@@ -43,7 +44,8 @@ export default function Home() {
     const now = new Date();
     const hour = selectedHour !== null ? selectedHour : now.getHours();
     const timeStr = `${String(hour).padStart(2, "0")}:00`;
-    const dateStr = now.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    const targetDate = selectedDate ? new Date(selectedDate) : now;
+    const dateStr = targetDate.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
     const locationStr = text || `latitude ${lat}, longitude ${lng}`;
 
@@ -131,7 +133,7 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
 
         <div className="pb-8">
           <LocationInput onSearch={handleSearch} isLoading={isLoading} />
-          <TimeSlider value={selectedHour} onChange={setSelectedHour} />
+          <TimeSlider value={selectedHour} onChange={setSelectedHour} date={selectedDate} onDateChange={setSelectedDate} />
         </div>
 
         {isLoading && <LoadingState />}
