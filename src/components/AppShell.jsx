@@ -17,7 +17,7 @@ export default function AppShell({ children }) {
   { path: "/", label: "Search", icon: Sun },
   { path: "/my-sunny-spots", label: "Favourites", icon: Heart },
   { path: "/leaderboard", label: "Top Spots", icon: Trophy },
-  { path: "/sunny-trails", label: "Trails", icon: Footprints }];
+  { path: "/sunny-trails", label: "Pub Crawls", icon: Footprints }];
 
 
   return (
