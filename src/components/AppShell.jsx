@@ -1,10 +1,10 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Sun, Heart, Settings, ArrowLeft, Trophy } from "lucide-react";
+import { Sun, Heart, Settings, ArrowLeft, Trophy, Footprints } from "lucide-react";
 import { useState } from "react";
 import SettingsSheet from "./SettingsSheet";
 import Footer from "./Footer";
 
-const MAIN_ROUTES = ["/", "/my-sunny-spots", "/leaderboard"];
+const MAIN_ROUTES = ["/", "/my-sunny-spots", "/leaderboard", "/sunny-trails"];
 
 export default function AppShell({ children }) {
   const location = useLocation();
@@ -16,7 +16,8 @@ export default function AppShell({ children }) {
   const tabs = [
   { path: "/", label: "Search", icon: Sun },
   { path: "/my-sunny-spots", label: "Favourites", icon: Heart },
-  { path: "/leaderboard", label: "Top Spots", icon: Trophy }];
+  { path: "/leaderboard", label: "Top Spots", icon: Trophy },
+  { path: "/sunny-trails", label: "Trails", icon: Footprints }];
 
 
   return (
