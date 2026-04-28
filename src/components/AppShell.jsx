@@ -16,7 +16,7 @@ export default function AppShell({ children }) {
   const tabs = [
   { path: "/", label: "Search", icon: Sun },
   { path: "/my-sunny-spots", label: "Favourites", icon: Heart },
-  { path: "/leaderboard", label: "Top Spots", icon: Trophy },
+  { path: "/leaderboard", label: "Top Rated", icon: Trophy },
   { path: "/sunny-trails", label: "Pub Crawls", icon: Footprints }];
 
 
