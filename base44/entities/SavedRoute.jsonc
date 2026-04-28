@@ -1,0 +1,46 @@
+{
+  "name": "SavedRoute",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Name of the custom route"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the route"
+    },
+    "stops": {
+      "type": "array",
+      "description": "Ordered list of pub stops",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string"
+          },
+          "lat": {
+            "type": "number"
+          },
+          "lng": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "created_by_name": {
+      "type": "string",
+      "description": "Display name of route creator"
+    }
+  },
+  "required": [
+    "name",
+    "stops"
+  ]
+}
