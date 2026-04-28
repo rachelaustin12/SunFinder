@@ -105,7 +105,7 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
           <div className="inline-flex items-center gap-2 mb-3">
             <Footprints className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground">Sunny Trails</h1>
+          <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground">Sunny Strolls</h1>
           <p className="text-muted-foreground text-sm mt-2">AI-generated pub crawl routes that follow the sun.</p>
         </div>
 
