@@ -1,9 +1,10 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2 } from "lucide-react";
+import { Trash2, Loader2, Info } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
 
 export default function SettingsSheet({ open, onClose }) {
   const [confirming, setConfirming] = useState(false);
@@ -35,6 +36,15 @@ export default function SettingsSheet({ open, onClose }) {
         </SheetHeader>
 
         <div className="space-y-6">
+          {/* About */}
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">App</p>
+            <Link to="/about" onClick={onClose} className="flex items-center gap-3 bg-muted/50 rounded-xl px-4 py-3 hover:bg-muted transition-colors">
+              <Info className="w-4 h-4 text-primary" />
+              <span className="text-sm font-medium text-foreground">How it works</span>
+            </Link>
+          </div>
+
           {/* Account Section */}
           <div>
             <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Account</p>

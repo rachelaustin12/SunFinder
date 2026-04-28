@@ -20,7 +20,6 @@ function formatDateLabel(dateStr) {
 
 export default function TimeSlider({ value, onChange, date, onDateChange }) {
   const hours = Array.from({ length: 18 }, (_, i) => i + 6);
-  const currentHour = value ?? new Date().getHours();
   const todayStr = new Date().toISOString().split("T")[0];
 
   const handleReset = () => {
@@ -83,7 +82,7 @@ export default function TimeSlider({ value, onChange, date, onDateChange }) {
             key={hour}
             onClick={() => onChange(hour)}
             className={`flex-shrink-0 px-3 py-2 rounded-lg text-xs font-medium transition-all whitespace-nowrap ${
-              currentHour === hour
+              value === hour
                 ? "bg-primary text-primary-foreground shadow-md"
                 : "bg-muted text-muted-foreground hover:bg-muted/80 hover:text-foreground"
             }`}

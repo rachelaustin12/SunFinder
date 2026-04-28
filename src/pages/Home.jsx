@@ -12,6 +12,7 @@ import PubMap from "../components/PubMap";
 import LoadingState from "../components/LoadingState";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGrid, Map, Sun, CloudSun, Cloud, Heart } from "lucide-react";
+import OnboardingModal from "../components/OnboardingModal";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -119,6 +120,7 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
 
   return (
     <div className="min-h-screen bg-background">
+      <OnboardingModal />
       {/* Pull-to-refresh indicator */}
       {distance > 0 && (
         <div
