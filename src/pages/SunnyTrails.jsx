@@ -31,7 +31,8 @@ export default function SunnyTrails() {
   const [selectedTrail, setSelectedTrail] = useState(null);
   const [locationName, setLocationName] = useState("");
   const [savedTrailNames, setSavedTrailNames] = useState(new Set());
-  const [savingTrail, setSavingTrail] = useState(false);
+  const [savingTrailName, setSavingTrailName] = useState(null); // track which trail is saving
+  const [justSaved, setJustSaved] = useState(null); // trail name that was just saved (for prompt)
   // My routes state
   const [savedRoutes, setSavedRoutes] = useState([]);
   const [loadingRoutes, setLoadingRoutes] = useState(false);
@@ -43,15 +44,24 @@ export default function SunnyTrails() {
     if (tab === "my") loadRoutes();
   }, [tab]);
 
+  // On mount, load saved route names so Save button reflects reality after navigation
+  useEffect(() => {
+    base44.entities.SavedRoute.list("-created_date").then(routes => {
+      setSavedTrailNames(new Set(routes.map(r => r.name)));
+      setSavedRoutes(routes);
+    });
+  }, []);
+
   const loadRoutes = async () => {
     setLoadingRoutes(true);
     const routes = await base44.entities.SavedRoute.list("-created_date");
     setSavedRoutes(routes);
+    setSavedTrailNames(new Set(routes.map(r => r.name)));
     setLoadingRoutes(false);
   };
 
   const handleSaveTrail = async (trail) => {
-    setSavingTrail(true);
+    setSavingTrailName(trail.name);
     await base44.entities.SavedRoute.create({
       name: trail.name,
       description: trail.tagline,
@@ -64,7 +74,9 @@ export default function SunnyTrails() {
       })),
     });
     setSavedTrailNames(prev => new Set([...prev, trail.name]));
-    setSavingTrail(false);
+    setSavingTrailName(null);
+    setJustSaved(trail.name);
+    setTimeout(() => setJustSaved(null), 4000);
   };
 
   const handleDelete = async (route) => {
@@ -282,15 +294,36 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
                             ) : (
                               <button
                                 onClick={() => handleSaveTrail(selectedTrail)}
-                                disabled={savingTrail}
+                                disabled={savingTrailName === selectedTrail.name}
                                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary text-secondary-foreground text-xs font-medium hover:bg-secondary/80 transition-colors disabled:opacity-60"
                               >
-                                {savingTrail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <BookmarkPlus className="w-3.5 h-3.5" />}
+                                {savingTrailName === selectedTrail.name ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <BookmarkPlus className="w-3.5 h-3.5" />}
                                 Save Route
                               </button>
                             )}
                           </div>
                         </div>
+
+                        <AnimatePresence>
+                          {justSaved === selectedTrail.name && (
+                            <motion.div
+                              initial={{ opacity: 0, y: -6 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: -6 }}
+                              className="flex items-center justify-between gap-3 mb-6 px-4 py-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl text-sm"
+                            >
+                              <span className="text-green-700 dark:text-green-400 font-medium flex items-center gap-1.5">
+                                <BookmarkCheck className="w-4 h-4" /> Route saved!
+                              </span>
+                              <button
+                                onClick={() => { setJustSaved(null); setTab("my"); }}
+                                className="text-xs text-green-700 dark:text-green-400 underline underline-offset-2 hover:no-underline"
+                              >
+                                View in My Routes →
+                              </button>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
 
                         {selectedTrail.stops?.some(s => s.lat && s.lng) && (
                           <div className="mb-6 rounded-2xl overflow-hidden border border-border/60">
@@ -400,7 +433,7 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
                     </div>
                     <p className="text-muted-foreground font-medium">No saved routes yet</p>
                     <p className="text-muted-foreground text-sm max-w-xs">
-                      Create a custom pub crawl route with your favourite spots, add stops, reorder them and save for later.
+                      Save an AI-generated trail or build your own custom route with your favourite spots.
                     </p>
                     <button
                       onClick={() => setBuilding(true)}
