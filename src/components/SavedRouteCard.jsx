@@ -34,6 +34,19 @@ export default function SavedRouteCard({ route, onEdit, onDelete }) {
         </div>
         <ChevronRight className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${expanded ? "rotate-90" : ""}`} />
       </button>
+      {buildGoogleMapsWalkingUrl(route.stops) && (
+        <div className="px-4 pb-3 -mt-2">
+          <a
+            href={buildGoogleMapsWalkingUrl(route.stops)}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={e => e.stopPropagation()}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            <Navigation className="w-3.5 h-3.5" /> Walk This Route
+          </a>
+        </div>
+      )}
 
       {/* Expanded detail */}
       {expanded && (
