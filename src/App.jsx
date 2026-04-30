@@ -11,6 +11,7 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Leaderboard from './pages/Leaderboard';
 import SunnyTrails from './pages/SunnyTrails';
 import About from './pages/About';
+import RoutesMap from './pages/RoutesMap';
 import AppShell from './components/AppShell';
 import { useEffect } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -72,6 +73,7 @@ function AnimatedRoutes() {
             <Route path="/leaderboard" element={<Leaderboard />} />
             <Route path="/sunny-trails" element={<SunnyTrails />} />
             <Route path="/about" element={<About />} />
+            <Route path="/routes-map" element={<RoutesMap />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </motion.div>
