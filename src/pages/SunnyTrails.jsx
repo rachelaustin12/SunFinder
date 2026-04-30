@@ -35,6 +35,7 @@ export default function SunnyTrails() {
   const [loadingRoutes, setLoadingRoutes] = useState(false);
   const [building, setBuilding] = useState(false); // creating new
   const [editingRoute, setEditingRoute] = useState(null); // route object
+  const [routeIsDirty, setRouteIsDirty] = useState(false);
 
   useEffect(() => {
     if (tab === "my") loadRoutes();
@@ -146,13 +147,19 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
         {/* Tab switcher */}
         <div className="flex bg-muted rounded-xl p-1 mb-8">
           <button
-            onClick={() => setTab("ai")}
+            onClick={() => {
+              if ((building || editingRoute) && routeIsDirty && !window.confirm("Leave route planner? Your unsaved changes will be lost.")) return;
+              setBuilding(false); setEditingRoute(null); setRouteIsDirty(false); setTab("ai");
+            }}
             className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${tab === "ai" ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"}`}
           >
             <Sparkles className="w-4 h-4" /> AI Routes
           </button>
           <button
-            onClick={() => setTab("my")}
+            onClick={() => {
+              if ((building || editingRoute) && routeIsDirty && !window.confirm("Leave route planner? Your unsaved changes will be lost.")) return;
+              setBuilding(false); setEditingRoute(null); setRouteIsDirty(false); setTab("my");
+            }}
             className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${tab === "my" ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"}`}
           >
             <BookMarked className="w-4 h-4" /> My Routes
@@ -324,8 +331,9 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
                 </h2>
                 <RouteBuilder
                   route={editingRoute}
-                  onSaved={() => { setBuilding(false); setEditingRoute(null); loadRoutes(); }}
-                  onCancel={() => { setBuilding(false); setEditingRoute(null); }}
+                  onSaved={() => { setBuilding(false); setEditingRoute(null); setRouteIsDirty(false); loadRoutes(); }}
+                  onCancel={() => { setBuilding(false); setEditingRoute(null); setRouteIsDirty(false); }}
+                  onDirtyChange={setRouteIsDirty}
                 />
               </motion.div>
             ) : (

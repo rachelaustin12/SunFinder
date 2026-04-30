@@ -9,14 +9,18 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const emptyStop = () => ({ name: "", address: "", notes: "", lat: null, lng: null });
 
-export default function RouteBuilder({ route, onSaved, onCancel }) {
+export default function RouteBuilder({ route, onSaved, onCancel, onDirtyChange }) {
   const [name, setName] = useState(route?.name || "");
   const [description, setDescription] = useState(route?.description || "");
   const [stops, setStops] = useState(route?.stops?.length ? route.stops : [emptyStop()]);
   const [isSaving, setIsSaving] = useState(false);
   const [editingStop, setEditingStop] = useState(null); // index
 
-  const isDirty = name.trim() || stops.some(s => s.name.trim());
+  const isDirty = !!(name.trim() || stops.some(s => s.name.trim()));
+
+  useEffect(() => {
+    onDirtyChange?.(isDirty);
+  }, [isDirty]);
 
   useEffect(() => {
     const handler = (e) => {
@@ -28,6 +32,11 @@ export default function RouteBuilder({ route, onSaved, onCancel }) {
     window.addEventListener("beforeunload", handler);
     return () => window.removeEventListener("beforeunload", handler);
   }, [isDirty]);
+
+  const handleCancel = () => {
+    if (isDirty && !window.confirm("Leave route planner? Your unsaved changes will be lost.")) return;
+    onCancel();
+  };
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
@@ -197,7 +206,7 @@ export default function RouteBuilder({ route, onSaved, onCancel }) {
 
       {/* Actions */}
       <div className="flex gap-3 pt-2">
-        <Button variant="outline" onClick={onCancel} className="flex-1">
+        <Button variant="outline" onClick={handleCancel} className="flex-1">
           <X className="w-4 h-4 mr-1" /> Cancel
         </Button>
         <Button
