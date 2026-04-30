@@ -3,11 +3,12 @@ import TrailMap from "./TrailMap";
 import { useState } from "react";
 
 const buildGoogleMapsWalkingUrl = (stops) => {
-  const validStops = (stops || []).filter(s => s.lat && s.lng);
+  const validStops = (stops || []).filter(s => (s.lat && s.lng) || s.address || s.name);
   if (validStops.length < 2) return null;
-  const origin = `${validStops[0].lat},${validStops[0].lng}`;
-  const destination = `${validStops[validStops.length - 1].lat},${validStops[validStops.length - 1].lng}`;
-  const waypoints = validStops.slice(1, -1).map(s => `${s.lat},${s.lng}`).join("|");
+  const encode = (s) => s.lat && s.lng ? `${s.lat},${s.lng}` : encodeURIComponent(s.address || s.name);
+  const origin = encode(validStops[0]);
+  const destination = encode(validStops[validStops.length - 1]);
+  const waypoints = validStops.slice(1, -1).map(encode).join("|");
   return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypoints ? `&waypoints=${waypoints}` : ""}&travelmode=walking`;
 };
 
