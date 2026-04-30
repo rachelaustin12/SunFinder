@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Footprints, Sun, Clock, MapPin, Loader2, Plus, Sparkles, BookMarked, Navigation } from "lucide-react";
+import { Footprints, Sun, Clock, MapPin, Loader2, Plus, Sparkles, BookMarked, Navigation, BookmarkPlus, BookmarkCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LocationInput from "../components/LocationInput";
 import TrailMap from "../components/TrailMap";
@@ -30,6 +30,8 @@ export default function SunnyTrails() {
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedTrail, setSelectedTrail] = useState(null);
   const [locationName, setLocationName] = useState("");
+  const [savedTrailNames, setSavedTrailNames] = useState(new Set());
+  const [savingTrail, setSavingTrail] = useState(false);
   // My routes state
   const [savedRoutes, setSavedRoutes] = useState([]);
   const [loadingRoutes, setLoadingRoutes] = useState(false);
@@ -46,6 +48,23 @@ export default function SunnyTrails() {
     const routes = await base44.entities.SavedRoute.list("-created_date");
     setSavedRoutes(routes);
     setLoadingRoutes(false);
+  };
+
+  const handleSaveTrail = async (trail) => {
+    setSavingTrail(true);
+    await base44.entities.SavedRoute.create({
+      name: trail.name,
+      description: trail.tagline,
+      stops: (trail.stops || []).map(s => ({
+        name: s.name,
+        address: s.address,
+        notes: s.sun_highlight || "",
+        lat: s.lat || null,
+        lng: s.lng || null,
+      })),
+    });
+    setSavedTrailNames(prev => new Set([...prev, trail.name]));
+    setSavingTrail(false);
   };
 
   const handleDelete = async (route) => {
@@ -245,16 +264,32 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
                             </span>
                             <span className="text-xs text-muted-foreground">{selectedTrail.stops?.length} stops</span>
                           </div>
-                          {buildGoogleMapsWalkingUrl(selectedTrail.stops || []) && (
-                            <a
-                              href={buildGoogleMapsWalkingUrl(selectedTrail.stops || [])}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
-                            >
-                              <Navigation className="w-3.5 h-3.5" /> Walk This Route
-                            </a>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {buildGoogleMapsWalkingUrl(selectedTrail.stops || []) && (
+                              <a
+                                href={buildGoogleMapsWalkingUrl(selectedTrail.stops || [])}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+                              >
+                                <Navigation className="w-3.5 h-3.5" /> Walk This Route
+                              </a>
+                            )}
+                            {savedTrailNames.has(selectedTrail.name) ? (
+                              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted text-muted-foreground text-xs font-medium">
+                                <BookmarkCheck className="w-3.5 h-3.5 text-primary" /> Saved
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => handleSaveTrail(selectedTrail)}
+                                disabled={savingTrail}
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-secondary text-secondary-foreground text-xs font-medium hover:bg-secondary/80 transition-colors disabled:opacity-60"
+                              >
+                                {savingTrail ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <BookmarkPlus className="w-3.5 h-3.5" />}
+                                Save Route
+                              </button>
+                            )}
+                          </div>
                         </div>
 
                         {selectedTrail.stops?.some(s => s.lat && s.lng) && (
