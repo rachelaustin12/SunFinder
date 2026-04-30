@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Plus, Trash2, GripVertical, Save, MapPin, X, Loader2, Edit2, Check } from "lucide-react";
@@ -15,6 +15,19 @@ export default function RouteBuilder({ route, onSaved, onCancel }) {
   const [stops, setStops] = useState(route?.stops?.length ? route.stops : [emptyStop()]);
   const [isSaving, setIsSaving] = useState(false);
   const [editingStop, setEditingStop] = useState(null); // index
+
+  const isDirty = name.trim() || stops.some(s => s.name.trim());
+
+  useEffect(() => {
+    const handler = (e) => {
+      if (isDirty) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
 
   const handleDragEnd = (result) => {
     if (!result.destination) return;
