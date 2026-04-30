@@ -165,45 +165,59 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
 
               {/* Controls bar */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-2">
+                <div role="radiogroup" aria-label="Sun filter" className="flex items-center gap-2">
                   <button
+                    role="radio"
+                    aria-checked={filter === "all"}
                     onClick={() => setFilter("all")}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filter === "all" ? "bg-foreground text-background" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                   >
                     All ({pubs.length})
                   </button>
                   <button
+                    role="radio"
+                    aria-checked={filter === "full_sun"}
                     onClick={() => setFilter("full_sun")}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "full_sun" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                   >
-                    <Sun className="w-3 h-3" /> Full Sun
+                    <Sun className="w-3 h-3" aria-hidden="true" /> Full Sun
                   </button>
                   <button
+                    role="radio"
+                    aria-checked={filter === "partial_sun"}
                     onClick={() => setFilter("partial_sun")}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "partial_sun" ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                   >
-                    <CloudSun className="w-3 h-3" /> Partial
+                    <CloudSun className="w-3 h-3" aria-hidden="true" /> Partial
                   </button>
                   <button
+                    role="radio"
+                    aria-checked={filter === "shade"}
                     onClick={() => setFilter("shade")}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "shade" ? "bg-muted-foreground text-background" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
                   >
-                    <Cloud className="w-3 h-3" /> Shade
+                    <Cloud className="w-3 h-3" aria-hidden="true" /> Shade
                   </button>
                 </div>
 
-                <div className="flex items-center gap-1 bg-muted rounded-lg p-1">
+                <div role="radiogroup" aria-label="View mode" className="flex items-center gap-1 bg-muted rounded-lg p-1">
                   <button
+                    role="radio"
+                    aria-checked={view === "grid"}
+                    aria-label="Grid view"
                     onClick={() => setView("grid")}
                     className={`p-2 rounded-md transition-colors ${view === "grid" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}
                   >
-                    <LayoutGrid className="w-4 h-4" />
+                    <LayoutGrid className="w-4 h-4" aria-hidden="true" />
                   </button>
                   <button
+                    role="radio"
+                    aria-checked={view === "map"}
+                    aria-label="Map view"
                     onClick={() => setView("map")}
                     className={`p-2 rounded-md transition-colors ${view === "map" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}
                   >
-                    <Map className="w-4 h-4" />
+                    <Map className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
               </div>
