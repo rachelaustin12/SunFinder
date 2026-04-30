@@ -1,6 +1,7 @@
-import { MapPin, Trash2, Edit2, ChevronRight, Footprints, Navigation } from "lucide-react";
+import { MapPin, Trash2, Edit2, ChevronRight, Footprints, Navigation, Clock, Loader2 } from "lucide-react";
 import TrailMap from "./TrailMap";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { base44 } from "@/api/base44Client";
 
 const buildGoogleMapsWalkingUrl = (stops) => {
   const validStops = (stops || []).filter(s => (s.lat && s.lng) || s.address || s.name);
@@ -15,8 +16,20 @@ const buildGoogleMapsWalkingUrl = (stops) => {
 export default function SavedRouteCard({ route, onEdit, onDelete }) {
   const [expanded, setExpanded] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [walkDuration, setWalkDuration] = useState(null);
+  const [loadingDuration, setLoadingDuration] = useState(false);
   const mapStops = (route.stops || []).filter(s => s.lat && s.lng);
   const walkUrl = buildGoogleMapsWalkingUrl(route.stops);
+
+  useEffect(() => {
+    if (!expanded || walkDuration || loadingDuration) return;
+    if (!route.stops || route.stops.length < 2) return;
+    setLoadingDuration(true);
+    base44.functions.invoke("getWalkingDuration", { stops: route.stops })
+      .then(res => setWalkDuration(res.data.durationText || null))
+      .catch(() => setWalkDuration(null))
+      .finally(() => setLoadingDuration(false));
+  }, [expanded]);
 
   return (
     <div className="bg-card border border-border/60 rounded-2xl overflow-hidden">
@@ -39,6 +52,18 @@ export default function SavedRouteCard({ route, onEdit, onDelete }) {
       {/* Expanded detail */}
       {expanded && (
         <div className="border-t border-border/40 px-4 pb-4 pt-3 space-y-4">
+          {/* Walking duration */}
+          {(loadingDuration || walkDuration) && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+              <Clock className="w-3.5 h-3.5 text-primary" />
+              {loadingDuration ? (
+                <><Loader2 className="w-3 h-3 animate-spin" /> Calculating walk time…</>
+              ) : (
+                <span>~{walkDuration} walking</span>
+              )}
+            </div>
+          )}
+
           {/* Actions */}
           <div className="flex gap-2 flex-wrap">
             <button
