@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
-import { Footprints, Sun, Clock, MapPin, Loader2, Plus, Sparkles, BookMarked } from "lucide-react";
+import { Footprints, Sun, Clock, MapPin, Loader2, Plus, Sparkles, BookMarked, Navigation } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import LocationInput from "../components/LocationInput";
 import TrailMap from "../components/TrailMap";
 import RouteBuilder from "../components/RouteBuilder";
 import SavedRouteCard from "../components/SavedRouteCard";
+
+const buildGoogleMapsWalkingUrl = (stops) => {
+  const validStops = stops.filter(s => s.lat && s.lng);
+  if (validStops.length < 2) return null;
+  const origin = `${validStops[0].lat},${validStops[0].lng}`;
+  const destination = `${validStops[validStops.length - 1].lat},${validStops[validStops.length - 1].lng}`;
+  const waypoints = validStops.slice(1, -1).map(s => `${s.lat},${s.lng}`).join("|");
+  return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypoints ? `&waypoints=${waypoints}` : ""}&travelmode=walking`;
+};
 
 const difficultyColor = {
   easy: "bg-green-100 text-green-700 border-green-200",
@@ -222,11 +231,23 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 mb-6">
-                          <span className={`text-xs font-medium px-3 py-1 rounded-full border capitalize ${difficultyColor[selectedTrail.difficulty] || "bg-muted text-muted-foreground border-border"}`}>
-                            {selectedTrail.difficulty}
-                          </span>
-                          <span className="text-xs text-muted-foreground">{selectedTrail.stops?.length} stops</span>
+                        <div className="flex items-center justify-between gap-2 mb-6">
+                          <div className="flex items-center gap-2">
+                            <span className={`text-xs font-medium px-3 py-1 rounded-full border capitalize ${difficultyColor[selectedTrail.difficulty] || "bg-muted text-muted-foreground border-border"}`}>
+                              {selectedTrail.difficulty}
+                            </span>
+                            <span className="text-xs text-muted-foreground">{selectedTrail.stops?.length} stops</span>
+                          </div>
+                          {buildGoogleMapsWalkingUrl(selectedTrail.stops || []) && (
+                            <a
+                              href={buildGoogleMapsWalkingUrl(selectedTrail.stops || [])}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground text-xs font-medium hover:bg-primary/90 transition-colors"
+                            >
+                              <Navigation className="w-3.5 h-3.5" /> Walk This Route
+                            </a>
+                          )}
                         </div>
 
                         {selectedTrail.stops?.some(s => s.lat && s.lng) && (
