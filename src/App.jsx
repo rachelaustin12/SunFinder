@@ -53,6 +53,9 @@ const AuthenticatedApp = () => {
 };
 
 
+// Tab routes are always mounted — hidden via CSS to preserve state & scroll
+const TAB_ROUTES = ["/", "/my-sunny-spots", "/leaderboard", "/sunny-trails"];
+
 const pageVariants = {
   initial: { opacity: 0, x: 24 },
   animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: "easeOut" } },
@@ -61,21 +64,30 @@ const pageVariants = {
 
 function AnimatedRoutes() {
   const location = useLocation();
+  const isTabRoute = TAB_ROUTES.includes(location.pathname);
+
   return (
     <AppShell>
-      <AnimatePresence mode="wait" initial={false}>
-        <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit" style={{ minHeight: "100%" }}>
-          <Routes location={location}>
-            <Route path="/" element={<Home />} />
-            <Route path="/my-sunny-spots" element={<MySunnySpots />} />
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/leaderboard" element={<Leaderboard />} />
-            <Route path="/sunny-trails" element={<SunnyTrails />} />
-            <Route path="/about" element={<About />} />
-            <Route path="*" element={<PageNotFound />} />
-          </Routes>
-        </motion.div>
-      </AnimatePresence>
+      {/* Always-mounted tab pages — shown/hidden with CSS, never unmounted */}
+      <div style={{ display: isTabRoute ? "block" : "none", minHeight: "100%" }}>
+        <div style={{ display: location.pathname === "/" ? "block" : "none" }}><Home /></div>
+        <div style={{ display: location.pathname === "/my-sunny-spots" ? "block" : "none" }}><MySunnySpots /></div>
+        <div style={{ display: location.pathname === "/leaderboard" ? "block" : "none" }}><Leaderboard /></div>
+        <div style={{ display: location.pathname === "/sunny-trails" ? "block" : "none" }}><SunnyTrails /></div>
+      </div>
+
+      {/* Stack routes (non-tab) — animated, unmount on leave */}
+      {!isTabRoute && (
+        <AnimatePresence mode="wait" initial={false}>
+          <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit" style={{ minHeight: "100%" }}>
+            <Routes location={location}>
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/about" element={<About />} />
+              <Route path="*" element={<PageNotFound />} />
+            </Routes>
+          </motion.div>
+        </AnimatePresence>
+      )}
     </AppShell>
   );
 }
