@@ -1,16 +1,6 @@
-import { MapPin, Trash2, Edit2, ChevronRight, Footprints, Navigation } from "lucide-react";
+import { MapPin, Trash2, Edit2, ChevronRight, Footprints } from "lucide-react";
 import TrailMap from "./TrailMap";
 import { useState } from "react";
-
-const buildGoogleMapsWalkingUrl = (stops) => {
-  const validStops = (stops || []).filter(s => (s.lat && s.lng) || s.address || s.name);
-  if (validStops.length < 2) return null;
-  const encode = (s) => s.lat && s.lng ? `${s.lat},${s.lng}` : encodeURIComponent(s.address || s.name);
-  const origin = encode(validStops[0]);
-  const destination = encode(validStops[validStops.length - 1]);
-  const waypoints = validStops.slice(1, -1).map(encode).join("|");
-  return `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}${waypoints ? `&waypoints=${waypoints}` : ""}&travelmode=walking`;
-};
 
 export default function SavedRouteCard({ route, onEdit, onDelete }) {
   const [expanded, setExpanded] = useState(false);
@@ -34,41 +24,18 @@ export default function SavedRouteCard({ route, onEdit, onDelete }) {
         </div>
         <ChevronRight className={`w-4 h-4 text-muted-foreground transition-transform flex-shrink-0 ${expanded ? "rotate-90" : ""}`} />
       </button>
-      {buildGoogleMapsWalkingUrl(route.stops) && (
-        <div className="px-4 pb-3 -mt-2">
-          <a
-            href={buildGoogleMapsWalkingUrl(route.stops)}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={e => e.stopPropagation()}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            <Navigation className="w-3.5 h-3.5" /> Walk This Route
-          </a>
-        </div>
-      )}
 
       {/* Expanded detail */}
       {expanded && (
         <div className="border-t border-border/40 px-4 pb-4 pt-3 space-y-4">
           {/* Actions */}
-          <div className="flex gap-2 flex-wrap">
+          <div className="flex gap-2">
             <button
               onClick={onEdit}
               className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-muted text-muted-foreground hover:text-foreground transition-colors"
             >
               <Edit2 className="w-3.5 h-3.5" /> Edit
             </button>
-            {buildGoogleMapsWalkingUrl(route.stops) && (
-              <a
-                href={buildGoogleMapsWalkingUrl(route.stops)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
-              >
-                <Navigation className="w-3.5 h-3.5" /> Walk This Route
-              </a>
-            )}
             {confirmDelete ? (
               <div className="flex items-center gap-2">
                 <span className="text-xs text-muted-foreground">Sure?</span>
