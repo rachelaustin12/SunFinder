@@ -56,10 +56,11 @@ const AuthenticatedApp = () => {
 // Tab routes are always mounted — hidden via CSS to preserve state & scroll
 const TAB_ROUTES = ["/", "/my-sunny-spots", "/leaderboard", "/sunny-trails"];
 
-const pageVariants = {
-  initial: { opacity: 0, x: 24 },
-  animate: { opacity: 1, x: 0, transition: { duration: 0.22, ease: "easeOut" } },
-  exit: { opacity: 0, x: -24, transition: { duration: 0.18, ease: "easeIn" } },
+// Full-width slide: stack pages slide in from the right, exit to the left
+const stackVariants = {
+  initial: { x: "100%", opacity: 1 },
+  animate: { x: 0, opacity: 1, transition: { duration: 0.3, ease: [0.32, 0.72, 0, 1] } },
+  exit:    { x: "100%", opacity: 1, transition: { duration: 0.25, ease: [0.32, 0.72, 0, 1] } },
 };
 
 function AnimatedRoutes() {
@@ -68,7 +69,7 @@ function AnimatedRoutes() {
 
   return (
     <AppShell>
-      {/* Always-mounted tab pages — shown/hidden with CSS, never unmounted */}
+      {/* Always-mounted tab pages — shown/hidden with CSS, NEVER unmounted (preserves scroll & state) */}
       <div style={{ display: isTabRoute ? "block" : "none", minHeight: "100%" }}>
         <div style={{ display: location.pathname === "/" ? "block" : "none" }}><Home /></div>
         <div style={{ display: location.pathname === "/my-sunny-spots" ? "block" : "none" }}><MySunnySpots /></div>
@@ -76,18 +77,25 @@ function AnimatedRoutes() {
         <div style={{ display: location.pathname === "/sunny-trails" ? "block" : "none" }}><SunnyTrails /></div>
       </div>
 
-      {/* Stack routes (non-tab) — animated, unmount on leave */}
-      {!isTabRoute && (
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div key={location.pathname} variants={pageVariants} initial="initial" animate="animate" exit="exit" style={{ minHeight: "100%" }}>
+      {/* Stack routes — slide over tabs, unmount on leave */}
+      <AnimatePresence mode="wait" initial={false}>
+        {!isTabRoute && (
+          <motion.div
+            key={location.pathname}
+            variants={stackVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            style={{ position: "absolute", inset: 0, zIndex: 40, overflowY: "auto", background: "hsl(var(--background))" }}
+          >
             <Routes location={location}>
               <Route path="/privacy" element={<PrivacyPolicy />} />
               <Route path="/about" element={<About />} />
               <Route path="*" element={<PageNotFound />} />
             </Routes>
           </motion.div>
-        </AnimatePresence>
-      )}
+        )}
+      </AnimatePresence>
     </AppShell>
   );
 }

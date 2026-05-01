@@ -21,7 +21,7 @@ export default function AppShell({ children }) {
 
 
   return (
-    <div className="flex flex-col min-h-screen bg-background">
+    <div className="flex flex-col min-h-screen bg-background relative overflow-hidden">
       {/* Fixed Header */}
       <header
         className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border/60 flex items-center justify-between px-4"
