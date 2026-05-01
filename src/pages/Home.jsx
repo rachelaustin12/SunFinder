@@ -25,7 +25,14 @@ export default function Home() {
   const [searchInfo, setSearchInfo] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null); // null = use current time
   const [selectedDate, setSelectedDate] = useState(null); // null = use today
-  const { favourites, isFavourite, toggleFavourite } = useFavourites();
+  const { favourites, isFavourite, toggleFavourite: _toggleFavourite } = useFavourites();
+  const [favouriteAnnouncement, setFavouriteAnnouncement] = useState("");
+
+  const toggleFavourite = (pub) => {
+    _toggleFavourite(pub);
+    setFavouriteAnnouncement(isFavourite(pub) ? `Removed ${pub.name} from My Sunny Spots` : `Saved ${pub.name} to My Sunny Spots`);
+    setTimeout(() => setFavouriteAnnouncement(""), 2000);
+  };
   const { getWeather, isLoadingWeather } = useWeather(pubs);
 
   const handlePullRefresh = useCallback(() => {
@@ -120,16 +127,19 @@ For image_url, use a relevant Unsplash photo URL like https://images.unsplash.co
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Screen-reader announcements for optimistic updates */}
+      <div aria-live="polite" aria-atomic="true" className="sr-only">{favouriteAnnouncement}</div>
       <OnboardingModal />
       {/* Pull-to-refresh indicator */}
-      {distance > 0 && (
-        <div
-          className="flex items-center justify-center text-xs text-muted-foreground transition-all"
-          style={{ height: distance, overflow: "hidden" }}
-        >
-          {pulling ? "↑ Release to refresh" : "↓ Pull to refresh"}
-        </div>
-      )}
+      <div
+        role="status"
+        aria-live="polite"
+        aria-label={distance > 0 ? (pulling ? "Release to refresh" : "Pull to refresh") : undefined}
+        className="flex items-center justify-center text-xs text-muted-foreground transition-all"
+        style={{ height: distance, overflow: "hidden" }}
+      >
+        {distance > 0 && (pulling ? "↑ Release to refresh" : "↓ Pull to refresh")}
+      </div>
       <div className="max-w-6xl mx-auto px-4">
         <HeroSection />
 

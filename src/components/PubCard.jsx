@@ -26,10 +26,12 @@ export default function PubCard({ pub, index, isFavourite, onToggleFavourite, we
           {onToggleFavourite && (
             <button
               onClick={(e) => { e.stopPropagation(); onToggleFavourite(pub); }}
+              aria-label={isFavourite ? `Remove ${pub.name} from My Sunny Spots` : `Save ${pub.name} to My Sunny Spots`}
+              aria-pressed={isFavourite}
               className="absolute top-3 left-3 p-2 rounded-full bg-black/30 backdrop-blur-sm transition-all hover:scale-110"
-              title={isFavourite ? "Remove from My Sunny Spots" : "Save to My Sunny Spots"}
             >
               <Heart
+                aria-hidden="true"
                 className={`w-4 h-4 transition-colors ${isFavourite ? "fill-red-500 text-red-500" : "text-white"}`}
               />
             </button>
