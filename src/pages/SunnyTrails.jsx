@@ -115,7 +115,7 @@ For each trail:
 - Estimate total trail duration including time at each pub (e.g. "2.5 hours")
 - Rate difficulty: "easy", "moderate", or "leisurely"
 
-Use real pub names and accurate addresses. For image_url use Unsplash beer garden photos like https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=800`,
+Use real pub names and accurate addresses. For image_url, search the internet for a real photo of that specific trail's first pub or most iconic stop — ideally from Google Maps, the pub's own website, or a review site. Use a direct image URL showing the actual venue. Only use a generic Unsplash photo as a last resort.`,
       add_context_from_internet: true,
       response_json_schema: {
         type: "object",

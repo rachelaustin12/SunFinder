@@ -33,7 +33,7 @@ Rank them by a combination of: south/south-west facing orientation, open exposur
 
 Return the top 10 real pubs in this area, ranked from best to worst for sunny garden experiences. Be as accurate as possible with real pub names, addresses, and ratings.
 
-For image_url use a relevant Unsplash photo URL like https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=600 (use different real Unsplash beer garden / pub / outdoor dining photos for each).`,
+For image_url, search the internet for a real photo of that specific pub — ideally from Google Maps, the pub's own website, or a review site. Use a direct image URL that actually shows the pub itself or its garden. Only fall back to a generic Unsplash beer garden photo if no real photo can be found.`,
       add_context_from_internet: true,
       response_json_schema: {
         type: "object",
