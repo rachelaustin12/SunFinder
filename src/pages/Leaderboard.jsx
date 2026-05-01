@@ -33,7 +33,16 @@ Rank them by a combination of: south/south-west facing orientation, open exposur
 
 Return the top 10 real pubs in this area, ranked from best to worst for sunny garden experiences. Be as accurate as possible with real pub names, addresses, and ratings.
 
-For image_url, search the internet for a real photo of that specific pub — ideally from Google Maps, the pub's own website, or a review site. Use a direct image URL that actually shows the pub itself or its garden. Only fall back to a generic Unsplash beer garden photo if no real photo can be found.`,
+For image_url, use one of these real Unsplash pub/beer garden photo URLs — pick the one that best matches the pub's vibe:
+- https://images.unsplash.com/photo-1555658636-6e4a36218be7?w=600 (sunny beer garden, wooden tables)
+- https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600 (outdoor pub terrace, sunny day)
+- https://images.unsplash.com/photo-1543007630-9710e4a00a20?w=600 (traditional English pub exterior)
+- https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=600 (pub garden with flowers)
+- https://images.unsplash.com/photo-1504279577054-acfeccf8fc52?w=600 (riverside pub, summer)
+- https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=600 (busy beer garden, umbrellas)
+- https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600 (cosy countryside pub)
+- https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600 (outdoor dining, warm light)
+Always pick a different URL for each pub.`,
       add_context_from_internet: true,
       response_json_schema: {
         type: "object",
