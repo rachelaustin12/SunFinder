@@ -6,6 +6,7 @@ import LocationInput from "../components/LocationInput";
 import TrailMap from "../components/TrailMap";
 import RouteBuilder from "../components/RouteBuilder";
 import SavedRouteCard from "../components/SavedRouteCard";
+import { usePullToRefresh } from "../hooks/usePullToRefresh";
 
 const buildGoogleMapsWalkingUrl = (stops) => {
   const validStops = stops.filter(s => s.lat && s.lng);
@@ -39,6 +40,7 @@ export default function SunnyTrails() {
   const [building, setBuilding] = useState(false); // creating new
   const [editingRoute, setEditingRoute] = useState(null); // route object
   const [routeIsDirty, setRouteIsDirty] = useState(false);
+  const { pulling, distance } = usePullToRefresh(() => { setTrails([]); setHasSearched(false); setSelectedTrail(null); }, hasSearched && !isLoading && tab === "ai");
 
   useEffect(() => {
     if (tab === "my") loadRoutes();
@@ -165,6 +167,9 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
 
   return (
     <div className="min-h-screen bg-background">
+      <div role="status" aria-live="polite" className="flex items-center justify-center text-xs text-muted-foreground transition-all font-sans" style={{ height: distance, overflow: "hidden" }}>
+        {distance > 0 && (pulling ? "↑ Release to refresh" : "↓ Pull to refresh")}
+      </div>
       <div className="max-w-4xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="text-center mb-6">

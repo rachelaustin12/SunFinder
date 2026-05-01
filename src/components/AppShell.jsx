@@ -19,6 +19,14 @@ export default function AppShell({ children }) {
   { path: "/leaderboard", label: "Top Rated", icon: Trophy },
   { path: "/sunny-trails", label: "Sunny Strolls", icon: Footprints }];
 
+  // When on a stack route, tab clicks should reset to the tab root
+  const handleTabClick = (e, path) => {
+    if (!isMainRoute) {
+      e.preventDefault();
+      navigate(path, { replace: true });
+    }
+  };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background relative overflow-hidden">
@@ -81,6 +89,7 @@ export default function AppShell({ children }) {
                 aria-selected={active}
                 aria-label={label}
                 tabIndex={active ? 0 : -1}
+                onClick={(e) => handleTabClick(e, path)}
                 className={`flex-1 flex flex-col items-center justify-center py-3 gap-1 select-none transition-colors ${
                 active ? "text-primary" : "text-muted-foreground hover:text-foreground"}`
                 }>

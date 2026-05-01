@@ -30,7 +30,7 @@ export default function SettingsSheet({ open, onClose }) {
 
   return (
     <Sheet open={open} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="rounded-t-2xl">
+      <SheetContent side="bottom" className="rounded-t-2xl" style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}>
         <SheetHeader className="mb-6">
           <SheetTitle className="text-left">Settings</SheetTitle>
         </SheetHeader>

@@ -1,5 +1,6 @@
 import { Heart, Trash2, Sun } from "lucide-react";
 import { useFavourites } from "../hooks/useFavourites";
+import { usePullToRefresh } from "../hooks/usePullToRefresh";
 import PubCard from "../components/PubCard";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -7,9 +8,13 @@ import { motion } from "framer-motion";
 
 export default function MySunnySpots() {
   const { favourites, removeFavourite } = useFavourites();
+  const { pulling, distance } = usePullToRefresh(() => {}, true);
 
   return (
     <div className="min-h-screen bg-background">
+      <div role="status" aria-live="polite" className="flex items-center justify-center text-xs text-muted-foreground transition-all font-sans" style={{ height: distance, overflow: "hidden" }}>
+        {distance > 0 && (pulling ? "↑ Release to refresh" : "↓ Pull to refresh")}
+      </div>
       <div className="max-w-6xl mx-auto px-4 py-12">
         <div className="mb-8">
           <h1 className="font-display text-3xl md:text-4xl font-bold text-foreground flex items-center gap-3">

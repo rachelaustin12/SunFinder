@@ -70,6 +70,7 @@ function AnimatedRoutes() {
   return (
     <AppShell>
       {/* Always-mounted tab pages — shown/hidden with CSS, NEVER unmounted (preserves scroll & state) */}
+      {/* Tab nav links navigate to tab root even from stack routes */}
       <div style={{ display: isTabRoute ? "block" : "none", minHeight: "100%" }}>
         <div style={{ display: location.pathname === "/" ? "block" : "none" }}><Home /></div>
         <div style={{ display: location.pathname === "/my-sunny-spots" ? "block" : "none" }}><MySunnySpots /></div>

@@ -4,6 +4,7 @@ import { Trophy, Sun, MapPin, Star, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import LocationInput from "../components/LocationInput";
+import { usePullToRefresh } from "../hooks/usePullToRefresh";
 
 const medalColors = ["text-yellow-500", "text-slate-400", "text-amber-600"];
 const medalBg = ["bg-yellow-50 border-yellow-200", "bg-slate-50 border-slate-200", "bg-amber-50 border-amber-200"];
@@ -16,6 +17,7 @@ export default function Leaderboard() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [locationName, setLocationName] = useState("");
+  const { pulling, distance } = usePullToRefresh(() => { setPubs([]); setHasSearched(false); }, hasSearched && !isLoading);
 
   const handleSearch = async ({ lat, lng, text }) => {
     setIsLoading(true);
@@ -65,6 +67,9 @@ For image_url use a relevant Unsplash photo URL like https://images.unsplash.com
 
   return (
     <div className="min-h-screen bg-background">
+      <div role="status" aria-live="polite" className="flex items-center justify-center text-xs text-muted-foreground transition-all font-sans" style={{ height: distance, overflow: "hidden" }}>
+        {distance > 0 && (pulling ? "↑ Release to refresh" : "↓ Pull to refresh")}
+      </div>
       <div className="max-w-2xl mx-auto px-4 py-10">
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-3">
