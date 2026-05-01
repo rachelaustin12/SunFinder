@@ -56,38 +56,40 @@ export default function AppShell({ children }) {
         className="flex-1 overflow-y-auto"
         style={{
           paddingTop: "calc(56px + env(safe-area-inset-top))",
-          paddingBottom: "calc(60px + env(safe-area-inset-bottom))"
+          paddingBottom: isMainRoute ? "calc(60px + env(safe-area-inset-bottom))" : "env(safe-area-inset-bottom)"
         }}>
         
         {children}
         <Footer />
       </main>
 
-      {/* Fixed Bottom Nav */}
-      <nav
-        role="tablist"
-        aria-label="Main navigation"
-        className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border/60 flex"
-        style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
-        
-        {tabs.map(({ path, label, icon: Icon }) => {
-          const active = location.pathname === path;
-          return (
-            <Link
-              key={path}
-              to={path}
-              role="tab"
-              aria-selected={active}
-              aria-label={label}
-              tabIndex={active ? 0 : -1}
-              className={`flex-1 flex flex-col items-center justify-center py-3 gap-1 select-none transition-colors ${
-              active ? "text-primary" : "text-muted-foreground hover:text-foreground"}`
-              }>
-              <Icon className={`w-5 h-5 ${active ? "fill-primary/20" : ""}`} aria-hidden="true" />
-              <span className="text-[11px] font-medium">{label}</span>
-            </Link>);
-        })}
-      </nav>
+      {/* Fixed Bottom Nav — only shown on tab routes */}
+      {isMainRoute && (
+        <nav
+          role="tablist"
+          aria-label="Main navigation"
+          className="fixed bottom-0 left-0 right-0 z-50 bg-card border-t border-border/60 flex"
+          style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
+          
+          {tabs.map(({ path, label, icon: Icon }) => {
+            const active = location.pathname === path;
+            return (
+              <Link
+                key={path}
+                to={path}
+                role="tab"
+                aria-selected={active}
+                aria-label={label}
+                tabIndex={active ? 0 : -1}
+                className={`flex-1 flex flex-col items-center justify-center py-3 gap-1 select-none transition-colors ${
+                active ? "text-primary" : "text-muted-foreground hover:text-foreground"}`
+                }>
+                <Icon className={`w-5 h-5 ${active ? "fill-primary/20" : ""}`} aria-hidden="true" />
+                <span className="text-[11px] font-medium">{label}</span>
+              </Link>);
+          })}
+        </nav>
+      )}
 
       <SettingsSheet open={settingsOpen} onClose={() => setSettingsOpen(false)} />
     </div>);
