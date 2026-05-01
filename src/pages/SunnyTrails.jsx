@@ -176,24 +176,28 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
         </div>
 
         {/* Tab switcher */}
-        <div className="flex bg-muted rounded-xl p-1 mb-8">
+        <div role="tablist" aria-label="Route tabs" className="flex bg-muted rounded-xl p-1 mb-8">
           <button
+            role="tab"
+            aria-selected={tab === "ai"}
             onClick={() => {
               if ((building || editingRoute) && routeIsDirty && !window.confirm("Leave route planner? Your unsaved changes will be lost.")) return;
               setBuilding(false); setEditingRoute(null); setRouteIsDirty(false); setTab("ai");
             }}
             className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${tab === "ai" ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"}`}
           >
-            <Sparkles className="w-4 h-4" /> AI Routes
+            <Sparkles className="w-4 h-4" aria-hidden="true" /> AI Routes
           </button>
           <button
+            role="tab"
+            aria-selected={tab === "my"}
             onClick={() => {
               if ((building || editingRoute) && routeIsDirty && !window.confirm("Leave route planner? Your unsaved changes will be lost.")) return;
               setBuilding(false); setEditingRoute(null); setRouteIsDirty(false); setTab("my");
             }}
             className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all ${tab === "my" ? "bg-card shadow text-foreground" : "text-muted-foreground hover:text-foreground"}`}
           >
-            <BookMarked className="w-4 h-4" /> My Routes
+            <BookMarked className="w-4 h-4" aria-hidden="true" /> My Routes
           </button>
         </div>
 
@@ -217,10 +221,12 @@ Use real pub names and accurate addresses. For image_url use Unsplash beer garde
                   <h2 className="font-display text-xl font-semibold text-foreground mb-1 text-center">{locationName}</h2>
                   <p className="text-xs text-center text-muted-foreground mb-6">Choose a trail to explore</p>
 
-                  <div className="flex gap-3 overflow-x-auto pb-3 mb-6 -mx-4 px-4">
+                  <div role="radiogroup" aria-label="Select trail" className="flex gap-3 overflow-x-auto pb-3 mb-6 -mx-4 px-4">
                     {trails.map((trail, i) => (
                       <button
                         key={i}
+                        role="radio"
+                        aria-checked={selectedTrail?.name === trail.name}
                         onClick={() => setSelectedTrail(trail)}
                         className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all border ${
                           selectedTrail?.name === trail.name
