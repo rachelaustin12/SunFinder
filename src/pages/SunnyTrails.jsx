@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { base44 } from "@/api/base44Client";
 import { Footprints, Sun, Clock, MapPin, Loader2, Plus, Sparkles, BookMarked, Navigation, BookmarkPlus, BookmarkCheck } from "lucide-react";
+import LoadingState from "../components/LoadingState";
 import { motion, AnimatePresence } from "framer-motion";
 import LocationInput from "../components/LocationInput";
 import TrailMap from "../components/TrailMap";
@@ -222,10 +223,7 @@ Always pick a different URL for each trail.`,
             </div>
 
             {isLoading && (
-              <div className="flex flex-col items-center gap-3 py-20">
-                <Loader2 className="w-8 h-8 animate-spin text-primary" />
-                <p className="text-sm text-muted-foreground">Plotting your sunny trail…</p>
-              </div>
+              <LoadingState message="Plotting your sunny trail…" subMessage="Finding the best pub crawl routes near you" />
             )}
 
             <AnimatePresence>
