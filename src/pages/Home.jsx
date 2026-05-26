@@ -11,7 +11,7 @@ import PubCard from "../components/PubCard";
 import PubMap from "../components/PubMap";
 import LoadingState from "../components/LoadingState";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutGrid, Map, Sun, CloudSun, Cloud, Heart } from "lucide-react";
+import { LayoutGrid, Map, Sun, CloudSun, Cloud, Heart, LogOut } from "lucide-react";
 import OnboardingModal from "../components/OnboardingModal";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -274,10 +274,17 @@ Always pick a different URL for each pub.`,
         )}
 
         {/* Footer */}
-        <div className="text-center py-8 border-t border-border/40">
+        <div className="text-center py-8 border-t border-border/40 space-y-4">
           <p className="text-xs text-muted-foreground">
             Sun positions are estimated based on time of day, season, and garden orientation. Always check ahead!
           </p>
+          <button
+            onClick={() => window.close()}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Exit app
+          </button>
         </div>
       </div>
     </div>
