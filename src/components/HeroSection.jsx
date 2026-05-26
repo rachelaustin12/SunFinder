@@ -21,29 +21,53 @@ export default function HeroSection() {
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
             className="absolute w-20 h-20 bg-primary/25 rounded-full blur-2xl"
           />
-          {/* Sun rays ring */}
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-            className="absolute w-20 h-20"
+          {/* SVG Sun with triangular rays + face + beer */}
+          <motion.svg
+            animate={{ rotate: [0, -8, 8, -8, 0] }}
+            transition={{ delay: 0.8, duration: 1.2, repeat: Infinity, repeatDelay: 4 }}
+            width="120" height="120" viewBox="0 0 120 120"
+            className="relative z-10"
+            aria-label="Sun holding a beer"
           >
-            {[...Array(8)].map((_, i) => (
-              <div
-                key={i}
-                className="absolute w-1.5 h-4 bg-primary/50 rounded-full"
-                style={{
-                  top: "50%",
-                  left: "50%",
-                  transformOrigin: "0 -32px",
-                  transform: `translate(-50%, -100%) rotate(${i * 45}deg) translateY(-32px)`,
-                }}
-              />
-            ))}
-          </motion.div>
-          {/* Sun face */}
-          <div className="relative z-10 w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg shadow-primary/30">
-            <span className="text-3xl select-none" role="img" aria-label="Sun holding a beer">🍺</span>
-          </div>
+            {/* Rotating rays */}
+            <motion.g
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              style={{ transformOrigin: "60px 60px" }}
+            >
+              {[...Array(16)].map((_, i) => {
+                const angle = (i * 360) / 16;
+                const rad = (angle * Math.PI) / 180;
+                const innerR = 34;
+                const outerR = 54;
+                const halfW = 5;
+                const lRad = ((angle - halfW) * Math.PI) / 180;
+                const rRad = ((angle + halfW) * Math.PI) / 180;
+                const x1 = 60 + innerR * Math.cos(lRad);
+                const y1 = 60 + innerR * Math.sin(lRad);
+                const x2 = 60 + innerR * Math.cos(rRad);
+                const y2 = 60 + innerR * Math.sin(rRad);
+                const xTip = 60 + outerR * Math.cos(rad);
+                const yTip = 60 + outerR * Math.sin(rad);
+                return (
+                  <polygon
+                    key={i}
+                    points={`${x1},${y1} ${x2},${y2} ${xTip},${yTip}`}
+                    fill="hsl(36 95% 52%)"
+                  />
+                );
+              })}
+            </motion.g>
+            {/* Sun circle */}
+            <circle cx="60" cy="60" r="30" fill="hsl(36 95% 52%)" />
+            {/* Eyes */}
+            <circle cx="52" cy="56" r="3" fill="#1a1a1a" />
+            <circle cx="68" cy="56" r="3" fill="#1a1a1a" />
+            {/* Smile */}
+            <path d="M50 66 Q60 75 70 66" stroke="#1a1a1a" strokeWidth="2.5" fill="none" strokeLinecap="round" />
+            {/* Beer mug arm */}
+            <text x="72" y="75" fontSize="22" style={{ userSelect: "none" }}>🍺</text>
+          </motion.svg>
         </motion.div>
       </motion.div>
 
