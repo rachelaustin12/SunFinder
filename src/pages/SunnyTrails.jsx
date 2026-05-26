@@ -223,7 +223,7 @@ Always pick a different URL for each trail.`,
             </div>
 
             {isLoading && (
-              <LoadingState message="Plotting your sunny trail…" subMessage="Finding the best pub crawl routes near you" />
+              <LoadingState message="Plotting your sunny trail…" subMessage="Finding the best pub crawl routes near you" onCancel={() => { setIsLoading(false); setHasSearched(false); }} />
             )}
 
             <AnimatePresence>

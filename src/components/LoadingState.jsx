@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 
-export default function LoadingState({ message = "Checking the sunshine...", subMessage = "Finding sunny pub gardens near you" }) {
+export default function LoadingState({ message = "Checking the sunshine...", subMessage = "Finding sunny pub gardens near you", onCancel }) {
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -50,6 +50,15 @@ export default function LoadingState({ message = "Checking the sunshine...", sub
           This can take a few seconds…
         </motion.p>
       </div>
+
+      {onCancel && (
+        <button
+          onClick={onCancel}
+          className="mt-2 px-5 py-2 rounded-full border border-border text-sm text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
+        >
+          Cancel search
+        </button>
+      )}
     </motion.div>
   );
 }

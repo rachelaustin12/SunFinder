@@ -1,6 +1,6 @@
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Trash2, Loader2, Info } from "lucide-react";
+import { Trash2, Loader2, Info, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/lib/AuthContext";
 import { base44 } from "@/api/base44Client";
@@ -43,6 +43,18 @@ export default function SettingsSheet({ open, onClose }) {
               <Info className="w-4 h-4 text-primary" />
               <span className="text-sm font-medium text-foreground">How it works</span>
             </Link>
+          </div>
+
+          {/* Exit */}
+          <div>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Session</p>
+            <button
+              onClick={() => window.close()}
+              className="w-full flex items-center gap-3 bg-muted/50 rounded-xl px-4 py-3 hover:bg-muted transition-colors"
+            >
+              <LogOut className="w-4 h-4 text-muted-foreground" />
+              <span className="text-sm font-medium text-foreground">Exit app</span>
+            </button>
           </div>
 
           {/* Account Section */}

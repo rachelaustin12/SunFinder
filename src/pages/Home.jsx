@@ -157,7 +157,7 @@ Always pick a different URL for each pub.`,
           <TimeSlider value={selectedHour} onChange={setSelectedHour} date={selectedDate} onDateChange={setSelectedDate} />
         </div>
 
-        {isLoading && <LoadingState />}
+        {isLoading && <LoadingState onCancel={() => { setIsLoading(false); setHasSearched(false); }} />}
 
         <AnimatePresence>
           {!isLoading && hasSearched && pubs.length > 0 && (
