@@ -1,10 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 
 export function usePullToRefresh(onRefresh, enabled = true) {
   const [pulling, setPulling] = useState(false);
   const [distance, setDistance] = useState(0);
   const startY = useRef(null);
+  const pullingRef = useRef(false);
+  const onRefreshRef = useRef(onRefresh);
   const THRESHOLD = 70;
+
+  // Keep ref in sync without triggering effect re-runs
+  useEffect(() => { onRefreshRef.current = onRefresh; }, [onRefresh]);
 
   useEffect(() => {
     if (!enabled) return;
@@ -19,14 +24,18 @@ export function usePullToRefresh(onRefresh, enabled = true) {
       if (startY.current === null) return;
       const dy = e.touches[0].clientY - startY.current;
       if (dy > 0 && window.scrollY === 0) {
-        setDistance(Math.min(dy, THRESHOLD + 20));
-        setPulling(dy >= THRESHOLD);
+        const clamped = Math.min(dy, THRESHOLD + 20);
+        setDistance(clamped);
+        const isPulling = dy >= THRESHOLD;
+        pullingRef.current = isPulling;
+        setPulling(isPulling);
       }
     };
 
     const onTouchEnd = () => {
-      if (pulling) onRefresh();
+      if (pullingRef.current) onRefreshRef.current();
       startY.current = null;
+      pullingRef.current = false;
       setDistance(0);
       setPulling(false);
     };
@@ -40,7 +49,7 @@ export function usePullToRefresh(onRefresh, enabled = true) {
       window.removeEventListener("touchmove", onTouchMove);
       window.removeEventListener("touchend", onTouchEnd);
     };
-  }, [pulling, onRefresh, enabled]);
+  }, [enabled]); // only re-run when enabled changes
 
   return { pulling, distance, threshold: THRESHOLD };
 }
