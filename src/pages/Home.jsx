@@ -278,6 +278,7 @@ Always pick a different URL for each pub.`,
           <p className="text-xs text-muted-foreground">
             Sun positions are estimated based on time of day, season, and garden orientation. Always check ahead!
           </p>
+          <p className="text-[10px] text-muted-foreground/50">Photos are illustrative stock images and not of the actual pubs shown.</p>
           <button
             onClick={() => window.close()}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
