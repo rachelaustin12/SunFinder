@@ -51,71 +51,11 @@ export default function Home() {
 
     const now = new Date();
     const hour = selectedHour !== null ? selectedHour : now.getHours();
-    const timeStr = `${String(hour).padStart(2, "0")}:00`;
     const targetDate = selectedDate ? new Date(selectedDate) : now;
     const dateStr = targetDate.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-    const locationStr = text || `latitude ${lat}, longitude ${lng}`;
-
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a local pub expert. The current date is ${dateStr} and the time is ${timeStr}.
-
-Find pub gardens that are likely to be in sunshine RIGHT NOW near: ${locationStr}
-
-For each pub, consider:
-- The direction the garden faces (south/south-west facing get most sun in the UK/northern hemisphere)
-- The time of day and typical sun position
-- Whether the garden is open/exposed vs surrounded by tall buildings or trees
-- Current season and typical weather
-
-Return 6-10 real pubs with gardens in this area. Be as accurate and real as possible - use actual pub names and addresses.
-
-For sun_status use:
-- "full_sun" if the garden is very likely in direct sunshine now
-- "partial_sun" if the garden gets some sun but may have partial shade
-- "shade" if the garden is mostly shaded at this time
-
-For image_url, use one of these real Unsplash pub/beer garden photo URLs — pick the one that best matches the pub's vibe (busy city pub, cosy countryside, riverside, rooftop, etc.):
-- https://images.unsplash.com/photo-1555658636-6e4a36218be7?w=600 (sunny beer garden, wooden tables)
-- https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600 (outdoor pub terrace, sunny day)
-- https://images.unsplash.com/photo-1543007630-9710e4a00a20?w=600 (traditional English pub exterior)
-- https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=600 (pub garden with flowers)
-- https://images.unsplash.com/photo-1504279577054-acfeccf8fc52?w=600 (riverside pub, summer)
-- https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=600 (busy beer garden, umbrellas)
-- https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600 (cosy countryside pub)
-- https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600 (outdoor dining, warm light)
-Always pick a different URL for each pub.`,
-      add_context_from_internet: true,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          location_name: { type: "string", description: "Friendly name of the area searched" },
-          weather_summary: { type: "string", description: "Brief current weather/sun conditions" },
-          pubs: {
-            type: "array",
-            items: {
-              type: "object",
-              properties: {
-                name: { type: "string" },
-                description: { type: "string", description: "2 sentences about the pub garden and why it's good for sunshine" },
-                address: { type: "string" },
-                sun_status: { type: "string", enum: ["full_sun", "partial_sun", "shade"] },
-                sun_hours: { type: "string", description: "e.g. 'Until ~6:30pm' or '2pm - 5pm'" },
-                rating: { type: "number", description: "Out of 5" },
-                lat: { type: "number" },
-                lng: { type: "number" },
-                google_maps_url: { type: "string" },
-                image_url: { type: "string" },
-                dog_friendly: { type: "boolean", description: "Is the pub dog friendly?" },
-                wheelchair_accessible: { type: "boolean", description: "Is the pub wheelchair accessible?" },
-                dietary_options: { type: "array", items: { type: "string", enum: ["vegan", "vegetarian", "gluten-free", "halal"] }, description: "Dietary options available" }
-              }
-            }
-          }
-        }
-      },
-      model: "gemini_3_flash"
-    });
+    const response = await base44.functions.invoke("searchPubs", { lat, lng, text, hour, dateStr });
+    const result = response.data;
 
     setPubs(result.pubs || []);
     setSearchInfo({ location: result.location_name, weather: result.weather_summary });
