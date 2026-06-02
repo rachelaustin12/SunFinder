@@ -220,11 +220,11 @@ export default function Home() {
           </p>
           <p className="text-[10px] text-muted-foreground/50">Photos are illustrative stock images and not of the actual pubs shown.</p>
           <button
-            onClick={() => window.close()}
+            onClick={() => base44.auth.logout()}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-border text-xs text-muted-foreground hover:text-foreground hover:border-foreground/30 transition-colors"
           >
             <LogOut className="w-3.5 h-3.5" />
-            Exit app
+            Sign out
           </button>
         </div>
       </div>

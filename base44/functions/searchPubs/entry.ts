@@ -9,7 +9,7 @@ async function geocodeText(text) {
   const data = await res.json();
   if (data.results?.length > 0) {
     const loc = data.results[0].geometry.location;
-    return { lat: loc.lat, lng: loc.lng };
+    return { lat: loc.lat, lng: loc.lng, name: data.results[0].formatted_address };
   }
   return null;
 }
@@ -19,6 +19,14 @@ async function searchNearbyPubs(lat, lng) {
   const res = await fetch(url);
   const data = await res.json();
   return data.results || [];
+}
+
+async function getPlaceDetails(placeId) {
+  const fields = "editorial_summary,opening_hours,website,formatted_phone_number";
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${PLACES_API_KEY}`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.result || {};
 }
 
 function getPhotoUrl(photoReference, maxWidth = 600) {
@@ -35,11 +43,14 @@ Deno.serve(async (req) => {
     // Resolve coordinates
     let resolvedLat = lat;
     let resolvedLng = lng;
+    let locationName = text;
+
     if (text && (!lat || !lng)) {
       const coords = await geocodeText(text);
       if (coords) {
         resolvedLat = coords.lat;
         resolvedLng = coords.lng;
+        locationName = coords.name;
       }
     }
 
@@ -51,24 +62,36 @@ Deno.serve(async (req) => {
     const places = await searchNearbyPubs(resolvedLat, resolvedLng);
 
     if (places.length === 0) {
-      return Response.json({ pubs: [], location_name: text || `${resolvedLat}, ${resolvedLng}`, weather_summary: "" });
+      return Response.json({ pubs: [], location_name: locationName || `${resolvedLat}, ${resolvedLng}`, weather_summary: "" });
     }
 
-    // Build a simplified list for the AI to enrich with sun data
-    const pubList = places.slice(0, 12).map(p => ({
-      name: p.name,
-      address: p.vicinity,
-      rating: p.rating || null,
-      lat: p.geometry.location.lat,
-      lng: p.geometry.location.lng,
-      place_id: p.place_id,
-      image_url: p.photos?.[0]?.photo_reference
-        ? getPhotoUrl(p.photos[0].photo_reference)
-        : null,
-      google_maps_url: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
-    }));
+    // Fetch details for top 10 pubs (editorial summary + hours)
+    const topPlaces = places.slice(0, 10);
+    const detailsResults = await Promise.all(
+      topPlaces.map(p => getPlaceDetails(p.place_id))
+    );
 
-    // Ask AI to enrich with sun status
+    // Build enriched pub list
+    const pubList = topPlaces.map((p, i) => {
+      const details = detailsResults[i] || {};
+      return {
+        name: p.name,
+        address: p.vicinity,
+        rating: p.rating || null,
+        lat: p.geometry.location.lat,
+        lng: p.geometry.location.lng,
+        place_id: p.place_id,
+        image_url: p.photos?.[0]?.photo_reference
+          ? getPhotoUrl(p.photos[0].photo_reference)
+          : null,
+        google_maps_url: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
+        real_description: details.editorial_summary?.overview || null,
+        website: details.website || null,
+        open_now: p.opening_hours?.open_now ?? null,
+      };
+    });
+
+    // Ask AI to enrich with sun status only (descriptions come from Google)
     const timeStr = `${String(hour).padStart(2, "0")}:00`;
     const locationStr = text || `latitude ${resolvedLat}, longitude ${resolvedLng}`;
 
@@ -81,14 +104,14 @@ ${JSON.stringify(pubList.map(p => ({ name: p.name, address: p.address, lat: p.la
 For each pub above, determine:
 - sun_status: "full_sun", "partial_sun", or "shade" based on the garden orientation, time of day, and season
 - sun_hours: estimated sun window e.g. "Until ~6:30pm" or "2pm–5pm"
-- description: 1-2 sentences about why this pub garden is good for sunshine
+- description: 1-2 sentences about the pub garden and sunshine (only used if Google has no description)
 - dog_friendly: boolean guess
 - wheelchair_accessible: boolean guess
 - dietary_options: array from ["vegan", "vegetarian", "gluten-free", "halal"]
 
 Also provide:
-- location_name: friendly area name
-- weather_summary: brief current weather/sun conditions for the area
+- location_name: friendly short area name (e.g. "Shoreditch, London")
+- weather_summary: brief current weather/sun conditions for the area today
 
 Return ONLY the enriched pub data in the JSON schema. Keep the same order as the input list.`,
       response_json_schema: {
@@ -116,7 +139,7 @@ Return ONLY the enriched pub data in the JSON schema. Keep the same order as the
       model: "gemini_3_flash"
     });
 
-    // Merge AI enrichment with Places data
+    // Merge: prefer Google's real description over AI's
     const enriched = (aiResult.pubs || []).map((aiPub, i) => {
       const place = pubList[i] || {};
       return {
@@ -124,7 +147,7 @@ Return ONLY the enriched pub data in the JSON schema. Keep the same order as the
         name: place.name || aiPub.name,
         sun_status: aiPub.sun_status || "partial_sun",
         sun_hours: aiPub.sun_hours || "",
-        description: aiPub.description || "",
+        description: place.real_description || aiPub.description || "",
         dog_friendly: aiPub.dog_friendly ?? false,
         wheelchair_accessible: aiPub.wheelchair_accessible ?? false,
         dietary_options: aiPub.dietary_options || [],
