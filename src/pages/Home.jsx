@@ -53,9 +53,64 @@ export default function Home() {
     const hour = selectedHour !== null ? selectedHour : now.getHours();
     const targetDate = selectedDate ? new Date(selectedDate) : now;
     const dateStr = targetDate.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    const timeStr = `${String(hour).padStart(2, "0")}:00`;
+    const locationStr = text || (lat && lng ? `${lat}, ${lng}` : null);
 
-    const response = await base44.functions.invoke("searchPubs", { lat, lng, text, hour, dateStr });
-    const result = response.data;
+    const result = await base44.integrations.Core.InvokeLLM({
+      prompt: `You are a local pub expert and sun specialist for the UK. The date is ${dateStr} and the time is ${timeStr}.
+
+Find 8-10 real pubs with outdoor beer gardens or terraces near: "${locationStr}"
+
+For each pub provide:
+- name: the real pub name
+- address: real street address
+- rating: estimated Google-style rating (3.5–5.0)
+- lat: latitude (accurate)
+- lng: longitude (accurate)
+- google_maps_url: https://www.google.com/maps/search/?api=1&query=<pub+name+and+address+url+encoded>
+- sun_status: "full_sun", "partial_sun", or "shade" at ${timeStr} on ${dateStr}
+- sun_hours: estimated sun window e.g. "Until ~6:30pm" or "2pm–5pm"
+- description: 1-2 sentences about the pub garden and its sun exposure
+- dog_friendly: boolean
+- wheelchair_accessible: boolean
+- dietary_options: array from ["vegan", "vegetarian", "gluten-free", "halal"]
+- image_url: null
+
+Also provide:
+- location_name: friendly short area name (e.g. "Shoreditch, London")
+- weather_summary: brief weather/sun conditions for this area on ${dateStr}
+
+Only include pubs that genuinely have outdoor seating. Return real, well-known pubs where possible.`,
+      response_json_schema: {
+        type: "object",
+        properties: {
+          location_name: { type: "string" },
+          weather_summary: { type: "string" },
+          pubs: {
+            type: "array",
+            items: {
+              type: "object",
+              properties: {
+                name: { type: "string" },
+                address: { type: "string" },
+                rating: { type: "number" },
+                lat: { type: "number" },
+                lng: { type: "number" },
+                google_maps_url: { type: "string" },
+                sun_status: { type: "string", enum: ["full_sun", "partial_sun", "shade"] },
+                sun_hours: { type: "string" },
+                description: { type: "string" },
+                dog_friendly: { type: "boolean" },
+                wheelchair_accessible: { type: "boolean" },
+                dietary_options: { type: "array", items: { type: "string" } },
+                image_url: { type: "string" }
+              }
+            }
+          }
+        }
+      },
+      model: "gemini_3_flash"
+    });
 
     setPubs(result.pubs || []);
     setSearchInfo({ location: result.location_name, weather: result.weather_summary });
