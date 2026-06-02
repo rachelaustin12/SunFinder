@@ -1,119 +1,42 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.25';
 
-const PLACES_API_KEY = Deno.env.get("GOOGLE_PLACES_API_KEY");
-const PHOTO_BASE = "https://maps.googleapis.com/maps/api/place/photo";
-
-async function geocodeText(text) {
-  const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(text)}&key=${PLACES_API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  if (data.results?.length > 0) {
-    const loc = data.results[0].geometry.location;
-    return { lat: loc.lat, lng: loc.lng, name: data.results[0].formatted_address };
-  }
-  return null;
-}
-
-async function searchNearbyPubs(lat, lng) {
-  const url = `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${lat},${lng}&radius=1500&type=bar&keyword=pub+garden+beer+garden&key=${PLACES_API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.results || [];
-}
-
-async function getPlaceDetails(placeId) {
-  const fields = "editorial_summary,opening_hours,website,formatted_phone_number";
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=${fields}&key=${PLACES_API_KEY}`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.result || {};
-}
-
-function getPhotoUrl(photoReference, maxWidth = 600) {
-  if (!photoReference) return null;
-  return `${PHOTO_BASE}?maxwidth=${maxWidth}&photo_reference=${photoReference}&key=${PLACES_API_KEY}`;
-}
-
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-
     const { lat, lng, text, hour, dateStr } = await req.json();
 
-    // Resolve coordinates
-    let resolvedLat = lat;
-    let resolvedLng = lng;
-    let locationName = text;
-
-    if (text && (!lat || !lng)) {
-      const coords = await geocodeText(text);
-      if (coords) {
-        resolvedLat = coords.lat;
-        resolvedLng = coords.lng;
-        locationName = coords.name;
-      }
+    const locationStr = text || (lat && lng ? `${lat}, ${lng}` : null);
+    if (!locationStr) {
+      return Response.json({ error: "No location provided" }, { status: 400 });
     }
 
-    if (!resolvedLat || !resolvedLng) {
-      return Response.json({ error: "Could not resolve location" }, { status: 400 });
-    }
-
-    // Get pubs from Google Places
-    const places = await searchNearbyPubs(resolvedLat, resolvedLng);
-
-    if (places.length === 0) {
-      return Response.json({ pubs: [], location_name: locationName || `${resolvedLat}, ${resolvedLng}`, weather_summary: "" });
-    }
-
-    // Fetch details for top 10 pubs (editorial summary + hours)
-    const topPlaces = places.slice(0, 10);
-    const detailsResults = await Promise.all(
-      topPlaces.map(p => getPlaceDetails(p.place_id))
-    );
-
-    // Build enriched pub list
-    const pubList = topPlaces.map((p, i) => {
-      const details = detailsResults[i] || {};
-      return {
-        name: p.name,
-        address: p.vicinity,
-        rating: p.rating || null,
-        lat: p.geometry.location.lat,
-        lng: p.geometry.location.lng,
-        place_id: p.place_id,
-        image_url: p.photos?.[0]?.photo_reference
-          ? getPhotoUrl(p.photos[0].photo_reference)
-          : null,
-        google_maps_url: `https://www.google.com/maps/place/?q=place_id:${p.place_id}`,
-        real_description: details.editorial_summary?.overview || null,
-        website: details.website || null,
-        open_now: p.opening_hours?.open_now ?? null,
-      };
-    });
-
-    // Ask AI to enrich with sun status only (descriptions come from Google)
     const timeStr = `${String(hour).padStart(2, "0")}:00`;
-    const locationStr = text || `latitude ${resolvedLat}, longitude ${resolvedLng}`;
 
     const aiResult = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `You are a local sun expert. The date is ${dateStr} and the time is ${timeStr}.
+      prompt: `You are a local pub expert and sun specialist for the UK. The date is ${dateStr} and the time is ${timeStr}.
 
-Here is a list of real pubs near ${locationStr}:
-${JSON.stringify(pubList.map(p => ({ name: p.name, address: p.address, lat: p.lat, lng: p.lng })), null, 2)}
+Find 8-10 real pubs with outdoor beer gardens or terraces near: "${locationStr}"
 
-For each pub above, determine:
-- sun_status: "full_sun", "partial_sun", or "shade" based on the garden orientation, time of day, and season
+For each pub provide:
+- name: the real pub name
+- address: real street address
+- rating: estimated Google-style rating (3.5–5.0)
+- lat: latitude (accurate)
+- lng: longitude (accurate)
+- google_maps_url: https://www.google.com/maps/search/?api=1&query=<pub+name+and+address+url+encoded>
+- sun_status: "full_sun", "partial_sun", or "shade" at ${timeStr} on ${dateStr}
 - sun_hours: estimated sun window e.g. "Until ~6:30pm" or "2pm–5pm"
-- description: 1-2 sentences about the pub garden and sunshine (only used if Google has no description)
-- dog_friendly: boolean guess
-- wheelchair_accessible: boolean guess
+- description: 1-2 sentences about the pub garden and its sun exposure
+- dog_friendly: boolean
+- wheelchair_accessible: boolean
 - dietary_options: array from ["vegan", "vegetarian", "gluten-free", "halal"]
+- image_url: null
 
 Also provide:
 - location_name: friendly short area name (e.g. "Shoreditch, London")
-- weather_summary: brief current weather/sun conditions for the area today
+- weather_summary: brief weather/sun conditions for this area on ${dateStr}
 
-Return ONLY the enriched pub data in the JSON schema. Keep the same order as the input list.`,
+Only include pubs that genuinely have outdoor seating. Return real, well-known pubs where possible.`,
       response_json_schema: {
         type: "object",
         properties: {
@@ -125,12 +48,18 @@ Return ONLY the enriched pub data in the JSON schema. Keep the same order as the
               type: "object",
               properties: {
                 name: { type: "string" },
+                address: { type: "string" },
+                rating: { type: "number" },
+                lat: { type: "number" },
+                lng: { type: "number" },
+                google_maps_url: { type: "string" },
                 sun_status: { type: "string", enum: ["full_sun", "partial_sun", "shade"] },
                 sun_hours: { type: "string" },
                 description: { type: "string" },
                 dog_friendly: { type: "boolean" },
                 wheelchair_accessible: { type: "boolean" },
-                dietary_options: { type: "array", items: { type: "string" } }
+                dietary_options: { type: "array", items: { type: "string" } },
+                image_url: { type: "string" }
               }
             }
           }
@@ -139,23 +68,8 @@ Return ONLY the enriched pub data in the JSON schema. Keep the same order as the
       model: "gemini_3_flash"
     });
 
-    // Merge: prefer Google's real description over AI's
-    const enriched = (aiResult.pubs || []).map((aiPub, i) => {
-      const place = pubList[i] || {};
-      return {
-        ...place,
-        name: place.name || aiPub.name,
-        sun_status: aiPub.sun_status || "partial_sun",
-        sun_hours: aiPub.sun_hours || "",
-        description: place.real_description || aiPub.description || "",
-        dog_friendly: aiPub.dog_friendly ?? false,
-        wheelchair_accessible: aiPub.wheelchair_accessible ?? false,
-        dietary_options: aiPub.dietary_options || [],
-      };
-    });
-
     return Response.json({
-      pubs: enriched,
+      pubs: aiResult.pubs || [],
       location_name: aiResult.location_name || locationStr,
       weather_summary: aiResult.weather_summary || "",
     });
