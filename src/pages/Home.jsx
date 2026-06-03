@@ -96,6 +96,7 @@ Only include pubs with genuine outdoor seating. Be concise.`,
       model: "gemini_3_flash"
     });
 
+    console.log("LLM result:", JSON.stringify(result));
     setPubs(result.pubs || []);
     setSearchInfo({ location: result.location_name, weather: result.weather_summary });
 
