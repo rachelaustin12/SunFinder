@@ -32,7 +32,7 @@ export default function AppShell({ children }) {
     <div className="flex flex-col min-h-screen bg-background relative overflow-hidden">
       {/* Fixed Header */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border/60 flex items-center justify-between px-4"
+        className="fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur border-b border-border/40 flex items-center justify-between px-4 shadow-sm"
         style={{ paddingTop: "env(safe-area-inset-top)", height: "calc(56px + env(safe-area-inset-top))" }}>
         
         {isMainRoute ?

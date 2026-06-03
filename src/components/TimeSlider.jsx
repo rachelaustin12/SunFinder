@@ -31,7 +31,7 @@ export default function TimeSlider({ value, onChange, date, onDateChange }) {
   const isCustomised = value !== null || hasCustomDate;
 
   return (
-    <div className="w-full max-w-2xl mx-auto mt-6 px-4">
+    <div className="w-full max-w-2xl mx-auto mt-5 px-4">
       <div className="flex items-center gap-2 mb-3">
         <Clock className="w-4 h-4 text-muted-foreground" />
         <span className="text-sm font-medium text-foreground">Plan ahead</span>

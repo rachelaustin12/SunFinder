@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { MapPin, Navigation, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
 export default function LocationInput({ onSearch, isLoading }) {
   const [location, setLocation] = useState("");
@@ -26,7 +24,6 @@ export default function LocationInput({ onSearch, isLoading }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!location.trim()) return;
-    // Check if it's coordinates
     const coordMatch = location.match(/^(-?\d+\.?\d*),\s*(-?\d+\.?\d*)$/);
     if (coordMatch) {
       onSearch({ lat: parseFloat(coordMatch[1]), lng: parseFloat(coordMatch[2]), text: null });
@@ -36,42 +33,40 @@ export default function LocationInput({ onSearch, isLoading }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 w-full max-w-xl mx-auto">
+    <form onSubmit={handleSubmit} className="flex gap-2 w-full max-w-xl mx-auto">
+      {/* Input with geo icon inside */}
       <div className="relative flex-1">
-        <MapPin className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
+        <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+        <input
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Enter your area, city or postcode..."
-          className="pl-10 h-12 bg-card border-border/60 text-base"
+          className="w-full h-12 pl-10 pr-12 rounded-full bg-card border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm"
         />
-      </div>
-      <div className="flex gap-2">
-        <Button
+        <button
           type="button"
-          variant="outline"
-          size="icon"
-          className="h-12 w-12 shrink-0 border-border/60"
           onClick={handleGeolocate}
           disabled={geoLoading || isLoading}
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+          aria-label="Use my location"
         >
           {geoLoading ? (
             <Loader2 className="w-4 h-4 animate-spin" />
           ) : (
             <Navigation className="w-4 h-4" />
           )}
-        </Button>
-        <Button
-          type="submit"
-          className="h-12 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-          disabled={isLoading || !location.trim()}
-        >
-          {isLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin mr-2" />
-          ) : null}
-          Find Sunshine
-        </Button>
+        </button>
       </div>
+
+      {/* Find Sunshine pill button */}
+      <button
+        type="submit"
+        disabled={isLoading || !location.trim()}
+        className="h-12 px-6 rounded-full bg-primary hover:bg-primary/90 text-white text-sm font-semibold shadow-sm transition-colors disabled:opacity-50 whitespace-nowrap flex items-center gap-2"
+      >
+        {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+        Find Sunshine
+      </button>
     </form>
   );
 }
