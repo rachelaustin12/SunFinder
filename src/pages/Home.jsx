@@ -264,7 +264,7 @@ Only include pubs with genuine outdoor seating. Be concise.`,
             </Link>
             <span className="text-muted-foreground/30">·</span>
             <button
-              onClick={() => base44.auth.logout()}
+              onClick={() => window.close()}
               className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               <LogOut className="w-3 h-3" />
