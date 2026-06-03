@@ -263,13 +263,13 @@ Only include pubs with genuine outdoor seating. Be concise.`,
               Privacy Policy
             </Link>
             <span className="text-muted-foreground/30">·</span>
-            <button
-              onClick={() => window.close()}
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors hidden">
-              
-              <LogOut className="w-3 h-3" />
-              Exit App
-            </button>
+            
+
+
+
+
+
+            
           </div>
         </div>
       </div>
