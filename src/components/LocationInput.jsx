@@ -41,7 +41,7 @@ export default function LocationInput({ onSearch, isLoading }) {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Location"
-          className="w-full h-14 rounded-full bg-card border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm pl-10" />
+          className="w-full h-14 rounded-full bg-card border border-border/50 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm pl-10 text-xs" />
         
         <button
           type="button"
