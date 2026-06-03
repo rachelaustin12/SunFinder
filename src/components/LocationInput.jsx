@@ -51,10 +51,11 @@ export default function LocationInput({ onSearch, isLoading }) {
           aria-label="Use my location"
         >
           {geoLoading ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <Loader2 className="w-3.5 h-3.5 animate-spin" />
           ) : (
-            <Navigation className="w-4 h-4" />
+            <Navigation className="w-3.5 h-3.5" />
           )}
+          <span className="text-xs font-medium">Locate me</span>
         </button>
       </div>
 
