@@ -41,20 +41,20 @@ export default function LocationInput({ onSearch, isLoading }) {
           value={location}
           onChange={(e) => setLocation(e.target.value)}
           placeholder="Enter your area, city or postcode..."
-          className="w-full h-12 pl-10 pr-12 rounded-full bg-card border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm"
-        />
+          className="w-full h-12 pl-10 pr-12 rounded-full bg-card border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm" />
+        
         <button
           type="button"
           onClick={handleGeolocate}
           disabled={geoLoading || isLoading}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
-          aria-label="Use my location"
-        >
-          {geoLoading ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin" />
-          ) : (
-            <Navigation className="w-3.5 h-3.5" />
-          )}
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 text-xs font-thin"
+          aria-label="Use my location">
+          
+          {geoLoading ?
+          <Loader2 className="w-3.5 h-3.5 animate-spin" /> :
+
+          <Navigation className="w-3.5 h-3.5" />
+          }
           <span className="text-xs font-medium">Locate me</span>
         </button>
       </div>
@@ -63,11 +63,11 @@ export default function LocationInput({ onSearch, isLoading }) {
       <button
         type="submit"
         disabled={isLoading || !location.trim()}
-        className="h-12 px-6 rounded-full bg-primary hover:bg-primary/90 text-white text-sm font-semibold shadow-sm transition-colors disabled:opacity-50 whitespace-nowrap flex items-center gap-2"
-      >
+        className="h-12 px-6 rounded-full bg-primary hover:bg-primary/90 text-white text-sm font-semibold shadow-sm transition-colors disabled:opacity-50 whitespace-nowrap flex items-center gap-2">
+        
         {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
         Find Sunshine
       </button>
-    </form>
-  );
+    </form>);
+
 }
