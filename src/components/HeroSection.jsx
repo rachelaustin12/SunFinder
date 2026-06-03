@@ -8,41 +8,41 @@ export default function HeroSection() {
         initial={{ opacity: 0, scale: 0.7 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-        className="inline-flex items-center justify-center mb-5"
-      >
+        className="inline-flex items-center justify-center mb-5">
+        
         <motion.div
           animate={{ rotate: [0, -8, 8, -8, 0] }}
           transition={{ delay: 0.8, duration: 1.2, repeat: Infinity, repeatDelay: 4 }}
-          className="relative flex items-center justify-center"
-        >
+          className="relative flex items-center justify-center">
+          
           {/* Glow ring */}
           <motion.div
             animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.6, 0.3] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-            className="absolute w-20 h-20 bg-primary/25 rounded-full blur-2xl"
-          />
+            className="absolute w-20 h-20 bg-primary/25 rounded-full blur-2xl" />
+          
           {/* SVG Sun with triangular rays + face + beer */}
           <motion.svg
             animate={{ rotate: [0, -8, 8, -8, 0] }}
             transition={{ delay: 0.8, duration: 1.2, repeat: Infinity, repeatDelay: 4 }}
             width="120" height="120" viewBox="0 0 120 120"
             className="relative z-10"
-            aria-label="Sun holding a beer"
-          >
+            aria-label="Sun holding a beer">
+            
             {/* Rotating rays */}
             <motion.g
               animate={{ rotate: 360 }}
               transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              style={{ transformOrigin: "60px 60px" }}
-            >
+              style={{ transformOrigin: "60px 60px" }}>
+              
               {[...Array(16)].map((_, i) => {
-                const angle = (i * 360) / 16;
-                const rad = (angle * Math.PI) / 180;
+                const angle = i * 360 / 16;
+                const rad = angle * Math.PI / 180;
                 const innerR = 34;
                 const outerR = 54;
                 const halfW = 5;
-                const lRad = ((angle - halfW) * Math.PI) / 180;
-                const rRad = ((angle + halfW) * Math.PI) / 180;
+                const lRad = (angle - halfW) * Math.PI / 180;
+                const rRad = (angle + halfW) * Math.PI / 180;
                 const x1 = 60 + innerR * Math.cos(lRad);
                 const y1 = 60 + innerR * Math.sin(lRad);
                 const x2 = 60 + innerR * Math.cos(rRad);
@@ -53,9 +53,9 @@ export default function HeroSection() {
                   <polygon
                     key={i}
                     points={`${x1},${y1} ${x2},${y2} ${xTip},${yTip}`}
-                    fill="hsl(36 95% 52%)"
-                  />
-                );
+                    fill="hsl(36 95% 52%)" />);
+
+
               })}
             </motion.g>
             {/* Sun circle */}
@@ -75,8 +75,8 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
-        className="font-display text-4xl md:text-6xl font-bold text-foreground tracking-tight leading-tight"
-      >
+        className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-tight text-[#e5d9a9]">
+        
         Sun<span className="text-primary"> Finder</span>
       </motion.h1>
 
@@ -84,10 +84,10 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.35, duration: 0.6 }}
-        className="mt-4 text-muted-foreground text-base md:text-lg max-w-md mx-auto leading-relaxed"
-      >
+        className="mt-4 text-muted-foreground text-base md:text-lg max-w-md mx-auto leading-relaxed">
+        
         Discover which pub gardens near you are basking in sunshine right now.
       </motion.p>
-    </div>
-  );
+    </div>);
+
 }
