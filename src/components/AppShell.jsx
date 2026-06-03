@@ -37,7 +37,7 @@ export default function AppShell({ children }) {
         
         {isMainRoute ?
         <Link to="/" className="flex items-center gap-2 select-none">
-            <Sun className="w-6 h-6 text-primary animate-pulse-glow" />
+            <img src="https://media.base44.com/images/public/69f1e2ceff340867af471a90/097d72c94_4.png" alt="Sun Finder logo" className="w-8 h-8 rounded-full object-cover" />
             <span className="font-display font-bold text-lg text-foreground">Sun Finder</span>
           </Link> :
 
