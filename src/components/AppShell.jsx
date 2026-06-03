@@ -38,7 +38,7 @@ export default function AppShell({ children }) {
         {isMainRoute ?
         <Link to="/" className="flex items-center gap-2 select-none">
             <Sun className="w-6 h-6 text-primary animate-pulse-glow" />
-            <span className="font-display font-bold text-lg text-foreground"></span>
+            <span className="font-display font-bold text-lg text-foreground">Sun Finder</span>
           </Link> :
 
         <button
