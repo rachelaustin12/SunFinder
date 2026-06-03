@@ -75,7 +75,7 @@ export default function HeroSection() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.6 }}
-        className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-tight text-[#e5d9a9]">
+        className="font-display text-4xl md:text-6xl font-bold tracking-tight leading-tight text-[#edeab1]">
         
         Sun<span className="text-primary"> Finder</span>
       </motion.h1>
