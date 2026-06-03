@@ -40,7 +40,7 @@ export default function LocationInput({ onSearch, isLoading }) {
         <input
           value={location}
           onChange={(e) => setLocation(e.target.value)}
-          placeholder="Enter your area, city or postcode..."
+          placeholder="Location"
           className="w-full h-14 pl-10 pr-28 rounded-full bg-card border border-border/50 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 shadow-sm" />
         
         <button
