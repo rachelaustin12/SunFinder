@@ -47,7 +47,7 @@ export default function LocationInput({ onSearch, isLoading }) {
           type="button"
           onClick={handleGeolocate}
           disabled={geoLoading || isLoading}
-          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 text-xs font-thin"
+          className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 text-xs font-thin capitalize"
           aria-label="Use my location">
           
           {geoLoading ?
