@@ -284,7 +284,7 @@ Only include pubs that genuinely have outdoor seating. Return real, well-known p
               className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               <LogOut className="w-3 h-3" />
-              Sign out
+              Exit App
             </button>
           </div>
         </div>
