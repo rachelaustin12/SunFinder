@@ -100,7 +100,7 @@ Only include pubs with genuine outdoor seating. Be concise.`,
     setSearchInfo({ location: result.location_name, weather: result.weather_summary });
 
     if (result.pubs?.length > 0) {
-      const firstWithCoords = result.pubs.find(p => p.lat && p.lng);
+      const firstWithCoords = result.pubs.find((p) => p.lat && p.lng);
       if (firstWithCoords) {
         setMapCenter([firstWithCoords.lat, firstWithCoords.lng]);
       }
@@ -111,7 +111,7 @@ Only include pubs with genuine outdoor seating. Be concise.`,
     setIsLoading(false);
   };
 
-  const filteredPubs = filter === "all" ? pubs : pubs.filter(p => p.sun_status === filter);
+  const filteredPubs = filter === "all" ? pubs : pubs.filter((p) => p.sun_status === filter);
 
   return (
     <div className="min-h-screen bg-background">
@@ -122,10 +122,10 @@ Only include pubs with genuine outdoor seating. Be concise.`,
       <div
         role="status"
         aria-live="polite"
-        aria-label={distance > 0 ? (pulling ? "Release to refresh" : "Pull to refresh") : undefined}
+        aria-label={distance > 0 ? pulling ? "Release to refresh" : "Pull to refresh" : undefined}
         className="flex items-center justify-center text-xs text-muted-foreground transition-all"
-        style={{ height: distance, overflow: "hidden" }}
-      >
+        style={{ height: distance, overflow: "hidden" }}>
+        
         {distance > 0 && (pulling ? "↑ Release to refresh" : "↓ Pull to refresh")}
       </div>
       <div className="max-w-6xl mx-auto px-4">
@@ -136,121 +136,121 @@ Only include pubs with genuine outdoor seating. Be concise.`,
           <TimeSlider value={selectedHour} onChange={setSelectedHour} date={selectedDate} onDateChange={setSelectedDate} />
         </div>
 
-        {isLoading && <LoadingState onCancel={() => { setIsLoading(false); setHasSearched(false); }} />}
+        {isLoading && <LoadingState onCancel={() => {setIsLoading(false);setHasSearched(false);}} />}
 
         <AnimatePresence>
-          {!isLoading && hasSearched && pubs.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
+          {!isLoading && hasSearched && pubs.length > 0 &&
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}>
+            
               {/* Search info */}
-              {searchInfo && (
-                <div className="text-center mb-8">
+              {searchInfo &&
+            <div className="text-center mb-8">
                   <h2 className="font-display text-2xl font-semibold text-foreground">
                     {searchInfo.location}
                   </h2>
                   <p className="text-sm text-muted-foreground mt-1">{searchInfo.weather}</p>
-                  {favourites.length > 0 && (
-                    <Link to="/my-sunny-spots" className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium text-primary hover:text-accent transition-colors">
+                  {favourites.length > 0 &&
+              <Link to="/my-sunny-spots" className="inline-flex items-center gap-1.5 mt-3 text-xs font-medium text-primary hover:text-accent transition-colors">
                       <Heart className="w-3.5 h-3.5 fill-primary" />
                       View My Sunny Spots ({favourites.length})
                     </Link>
-                  )}
+              }
                 </div>
-              )}
+            }
 
               {/* Controls bar */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
                 <div role="radiogroup" aria-label="Sun filter" className="flex items-center gap-2">
                   <button
-                    role="radio"
-                    aria-checked={filter === "all"}
-                    onClick={() => setFilter("all")}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filter === "all" ? "bg-foreground text-background" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-                  >
+                  role="radio"
+                  aria-checked={filter === "all"}
+                  onClick={() => setFilter("all")}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${filter === "all" ? "bg-foreground text-background" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+                  
                     All ({pubs.length})
                   </button>
                   <button
-                    role="radio"
-                    aria-checked={filter === "full_sun"}
-                    onClick={() => setFilter("full_sun")}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "full_sun" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-                  >
+                  role="radio"
+                  aria-checked={filter === "full_sun"}
+                  onClick={() => setFilter("full_sun")}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "full_sun" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+                  
                     <Sun className="w-3 h-3" aria-hidden="true" /> Full Sun
                   </button>
                   <button
-                    role="radio"
-                    aria-checked={filter === "partial_sun"}
-                    onClick={() => setFilter("partial_sun")}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "partial_sun" ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-                  >
+                  role="radio"
+                  aria-checked={filter === "partial_sun"}
+                  onClick={() => setFilter("partial_sun")}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "partial_sun" ? "bg-secondary text-secondary-foreground" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+                  
                     <CloudSun className="w-3 h-3" aria-hidden="true" /> Partial
                   </button>
                   <button
-                    role="radio"
-                    aria-checked={filter === "shade"}
-                    onClick={() => setFilter("shade")}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "shade" ? "bg-muted-foreground text-background" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
-                  >
+                  role="radio"
+                  aria-checked={filter === "shade"}
+                  onClick={() => setFilter("shade")}
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors inline-flex items-center gap-1 ${filter === "shade" ? "bg-muted-foreground text-background" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}>
+                  
                     <Cloud className="w-3 h-3" aria-hidden="true" /> Shade
                   </button>
                 </div>
 
                 <div role="radiogroup" aria-label="View mode" className="flex items-center gap-1 bg-muted rounded-lg p-1">
                   <button
-                    role="radio"
-                    aria-checked={view === "grid"}
-                    aria-label="Grid view"
-                    onClick={() => setView("grid")}
-                    className={`p-2 rounded-md transition-colors ${view === "grid" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}
-                  >
+                  role="radio"
+                  aria-checked={view === "grid"}
+                  aria-label="Grid view"
+                  onClick={() => setView("grid")}
+                  className={`p-2 rounded-md transition-colors ${view === "grid" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}>
+                  
                     <LayoutGrid className="w-4 h-4" aria-hidden="true" />
                   </button>
                   <button
-                    role="radio"
-                    aria-checked={view === "map"}
-                    aria-label="Map view"
-                    onClick={() => setView("map")}
-                    className={`p-2 rounded-md transition-colors ${view === "map" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}
-                  >
+                  role="radio"
+                  aria-checked={view === "map"}
+                  aria-label="Map view"
+                  onClick={() => setView("map")}
+                  className={`p-2 rounded-md transition-colors ${view === "map" ? "bg-card shadow-sm text-foreground" : "text-muted-foreground"}`}>
+                  
                     <Map className="w-4 h-4" aria-hidden="true" />
                   </button>
                 </div>
               </div>
 
               {/* Content */}
-              {view === "grid" ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
-                  {filteredPubs.map((pub, i) => (
-                    <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} weather={getWeather(pub)} isLoadingWeather={isLoadingWeather} />
-                  ))}
-                  {filteredPubs.length === 0 && (
-                    <div className="col-span-full text-center py-12 text-muted-foreground">
+              {view === "grid" ?
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
+                  {filteredPubs.map((pub, i) =>
+              <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} weather={getWeather(pub)} isLoadingWeather={isLoadingWeather} />
+              )}
+                  {filteredPubs.length === 0 &&
+              <div className="col-span-full text-center py-12 text-muted-foreground">
                       No pubs match this filter.
                     </div>
-                  )}
-                </div>
-              ) : (
-                <div className="pb-16">
+              }
+                </div> :
+
+            <div className="pb-16">
                   <PubMap pubs={filteredPubs} center={mapCenter} />
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
-                    {filteredPubs.map((pub, i) => (
-                      <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} weather={getWeather(pub)} isLoadingWeather={isLoadingWeather} />
-                    ))}
+                    {filteredPubs.map((pub, i) =>
+                <PubCard key={i} pub={pub} index={i} isFavourite={isFavourite(pub)} onToggleFavourite={toggleFavourite} weather={getWeather(pub)} isLoadingWeather={isLoadingWeather} />
+                )}
                     </div>
                 </div>
-              )}
+            }
             </motion.div>
-          )}
+          }
         </AnimatePresence>
 
-        {!isLoading && hasSearched && pubs.length === 0 && (
-          <div className="text-center py-20">
+        {!isLoading && hasSearched && pubs.length === 0 &&
+        <div className="text-center py-20">
             <p className="text-muted-foreground">No pub gardens found for that area. Try a different location.</p>
           </div>
-        )}
+        }
 
         {/* Footer */}
         <div className="text-center py-8 border-t border-border/40 space-y-3">
@@ -265,14 +265,14 @@ Only include pubs with genuine outdoor seating. Be concise.`,
             <span className="text-muted-foreground/30">·</span>
             <button
               onClick={() => window.close()}
-              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
-            >
+              className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors hidden">
+              
               <LogOut className="w-3 h-3" />
               Exit App
             </button>
           </div>
         </div>
       </div>
-    </div>
-  );
+    </div>);
+
 }
