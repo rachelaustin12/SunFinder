@@ -125,7 +125,6 @@ Use real pub names and accurate addresses. For image_url, use one of these real 
 - https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=800 (busy beer garden, umbrellas)
 - https://images.unsplash.com/photo-1600891964092-4316c288032e?w=800 (cosy countryside pub)
 Always pick a different URL for each trail.`,
-      add_context_from_internet: true,
       response_json_schema: {
         type: "object",
         properties: {
@@ -165,7 +164,6 @@ Always pick a different URL for each trail.`,
           }
         }
       },
-      model: "gemini_3_flash"
     });
 
     setTrails(result.trails || []);

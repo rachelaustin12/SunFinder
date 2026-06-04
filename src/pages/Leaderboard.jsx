@@ -27,11 +27,11 @@ export default function Leaderboard() {
     const locationStr = text || `latitude ${lat}, longitude ${lng}`;
 
     const result = await base44.integrations.Core.InvokeLLM({
-      prompt: `You are a local pub expert. Find the TOP 10 sunniest and best-rated pub gardens near: ${locationStr}
+      prompt: `You are a local pub expert. Find the TOP 6 sunniest and best-rated pub gardens near: ${locationStr}
 
 Rank them by a combination of: south/south-west facing orientation, open exposure to sunlight, garden quality, and overall pub rating.
 
-Return the top 10 real pubs in this area, ranked from best to worst for sunny garden experiences. Be as accurate as possible with real pub names, addresses, and ratings.
+Return the top 6 real pubs in this area, ranked from best to worst for sunny garden experiences. Be as accurate as possible with real pub names, addresses, and ratings.
 
 For image_url, use one of these real Unsplash pub/beer garden photo URLs — pick the one that best matches the pub's vibe:
 - https://images.unsplash.com/photo-1555658636-6e4a36218be7?w=600 (sunny beer garden, wooden tables)
@@ -43,7 +43,6 @@ For image_url, use one of these real Unsplash pub/beer garden photo URLs — pic
 - https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600 (cosy countryside pub)
 - https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=600 (outdoor dining, warm light)
 Always pick a different URL for each pub.`,
-      add_context_from_internet: true,
       response_json_schema: {
         type: "object",
         properties: {
@@ -66,7 +65,6 @@ Always pick a different URL for each pub.`,
           }
         }
       },
-      model: "gemini_3_flash"
     });
 
     setPubs(result.pubs || []);
