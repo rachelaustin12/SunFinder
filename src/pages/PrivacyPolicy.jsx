@@ -39,16 +39,16 @@ export default function PrivacyPolicy() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl font-semibold mb-3">5. Your Rights</h2>
-            <p className="text-muted-foreground leading-relaxed">
+            <h2 className="font-display text-2xl font-semibold mb-3 hidden">5. Your Rights</h2>
+            <p className="text-muted-foreground leading-relaxed hidden">
               You can request access to, correction of, or deletion of your personal data. Contact us at privacy@suntracker.local 
               to exercise these rights.
             </p>
           </section>
 
           <section>
-            <h2 className="font-display text-2xl font-semibold mb-3">6. Changes to This Policy</h2>
-            <p className="text-muted-foreground leading-relaxed">
+            <h2 className="font-display text-2xl font-semibold mb-3 hidden">6. Changes to This Policy</h2>
+            <p className="text-muted-foreground leading-relaxed hidden">
               We may update this privacy policy from time to time. We'll notify you of significant changes via email or prominent notice on the app.
             </p>
           </section>
