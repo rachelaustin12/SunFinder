@@ -61,7 +61,7 @@ export default function Home() {
     const result = await base44.integrations.Core.InvokeLLM({
       prompt: `UK pub sun expert. Date: ${dateStr}, Time: ${timeStr}. Location: "${locationStr}".
 
-List 4 real pubs with outdoor beer gardens near this location. For each return:
+List 6 real pubs with outdoor beer gardens near this location. For each return:
 name, address, rating (3.5-5.0), lat, lng, google_maps_url (https://www.google.com/maps/search/?api=1&query=URLENCODED_NAME_ADDRESS), sun_status ("full_sun"/"partial_sun"/"shade" at ${timeStr}), sun_hours (e.g. "Until 6pm"), description (1 sentence), dog_friendly, wheelchair_accessible, dietary_options (array of "vegan"/"vegetarian"/"gluten-free"/"halal"), image_url (null).
 
 Also: location_name (short area name), weather_summary (one sentence).
