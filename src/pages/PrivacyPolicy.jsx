@@ -16,9 +16,9 @@ export default function PrivacyPolicy() {
 
           <section>
             <h2 className="font-display text-2xl font-semibold mb-3">2. How We Use Your Information</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              We use your information to provide and improve our service, display weather and sunshine data for locations you search, 
-              store your favorite pub gardens, process your reviews, and communicate with you about your account.
+            <p className="text-muted-foreground leading-relaxed">We use your information to provide and improve our service, display weather and sunshine data for locations you search, store your favorite pub gardens and process your reviews.
+
+
             </p>
           </section>
 
