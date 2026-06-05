@@ -54,10 +54,10 @@ export default function PrivacyPolicy() {
           </section>
 
           <section>
-            <h2 className="font-display text-2xl font-semibold mb-3 hidden">7. Contact Us</h2>
-            <p className="text-muted-foreground leading-relaxed hidden">
-              If you have questions about this privacy policy, please contact us at privacy@suntracker.local
-            </p>
+            
+            
+
+            
           </section>
         </div>
 
