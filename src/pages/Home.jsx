@@ -92,7 +92,7 @@ Only include pubs with genuine outdoor seating. Be concise.`,
             }
           }
         }
-      },
+      }
     });
 
     setPubs(result.pubs || []);
@@ -253,8 +253,8 @@ Only include pubs with genuine outdoor seating. Be concise.`,
 
         {/* Footer */}
         <div className="text-center py-8 border-t border-border/40 space-y-3">
-          <p className="text-xs text-muted-foreground">
-            Sun positions are estimated based on time of day, season, and garden orientation. Always check ahead!
+          <p className="text-xs text-muted-foreground">4
+
           </p>
           <p className="text-[10px] text-muted-foreground/50">Photos are illustrative and sourced from Google Maps.</p>
           <div className="flex items-center justify-center gap-4 pt-1">
