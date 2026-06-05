@@ -13,6 +13,7 @@ import LoadingState from "../components/LoadingState";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LayoutGrid, Map, Sun, CloudSun, Cloud, Heart, LogOut } from "lucide-react";
 import OnboardingModal from "../components/OnboardingModal";
+import DayForecastBanner from "../components/DayForecastBanner";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
@@ -25,6 +26,7 @@ export default function Home() {
   const [searchInfo, setSearchInfo] = useState(null);
   const [selectedHour, setSelectedHour] = useState(null); // null = use current time
   const [selectedDate, setSelectedDate] = useState(null); // null = use today
+  const [searchCoords, setSearchCoords] = useState(null); // { lat, lng } of last search
   const { favourites, isFavourite, toggleFavourite: _toggleFavourite } = useFavourites();
   const [favouriteAnnouncement, setFavouriteAnnouncement] = useState("");
 
@@ -33,7 +35,7 @@ export default function Home() {
     setFavouriteAnnouncement(isFavourite(pub) ? `Removed ${pub.name} from My Sunny Spots` : `Saved ${pub.name} to My Sunny Spots`);
     setTimeout(() => setFavouriteAnnouncement(""), 2000);
   };
-  const { getWeather, isLoadingWeather } = useWeather(pubs);
+  const { getWeather, isLoadingWeather, dayForecast } = useWeather(pubs, selectedDate);
 
   const handlePullRefresh = useCallback(() => {
     if (hasSearched && !isLoading) {
@@ -95,11 +97,22 @@ Only include pubs with genuine outdoor seating. Be concise.`,
       }
     });
 
-    setPubs(result.pubs || []);
+    // Sort by distance from search coords if available
+    let resultPubs = result.pubs || [];
+    if (lat && lng) {
+      setSearchCoords({ lat, lng });
+      resultPubs = resultPubs.slice().sort((a, b) => {
+        const distA = a.lat && a.lng ? Math.hypot(a.lat - lat, a.lng - lng) : Infinity;
+        const distB = b.lat && b.lng ? Math.hypot(b.lat - lat, b.lng - lng) : Infinity;
+        return distA - distB;
+      });
+    }
+
+    setPubs(resultPubs);
     setSearchInfo({ location: result.location_name, weather: result.weather_summary });
 
-    if (result.pubs?.length > 0) {
-      const firstWithCoords = result.pubs.find((p) => p.lat && p.lng);
+    if (resultPubs.length > 0) {
+      const firstWithCoords = resultPubs.find((p) => p.lat && p.lng);
       if (firstWithCoords) {
         setMapCenter([firstWithCoords.lat, firstWithCoords.lng]);
       }
@@ -144,6 +157,9 @@ Only include pubs with genuine outdoor seating. Be concise.`,
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}>
             
+              {/* Day forecast banner */}
+              <DayForecastBanner forecast={dayForecast} date={selectedDate} />
+
               {/* Search info */}
               {searchInfo &&
             <div className="text-center mb-8">

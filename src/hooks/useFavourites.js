@@ -33,5 +33,15 @@ export function useFavourites() {
     );
   };
 
-  return { favourites, isFavourite, toggleFavourite, removeFavourite };
+  const updateFavourite = (pub, updates) => {
+    setFavourites((prev) =>
+      prev.map((f) =>
+        f.name === pub.name && f.address === pub.address ? { ...f, ...updates } : f
+      )
+    );
+  };
+
+  const clearAllFavourites = () => setFavourites([]);
+
+  return { favourites, isFavourite, toggleFavourite, removeFavourite, updateFavourite, clearAllFavourites };
 }

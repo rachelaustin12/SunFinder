@@ -5,6 +5,26 @@ import WeatherStrip from "./WeatherStrip";
 import PubReviews from "./PubReviews";
 import { motion } from "framer-motion";
 
+// Free Unsplash pub/beer garden fallback images (no API key needed)
+const FALLBACK_IMAGES = [
+  "https://images.unsplash.com/photo-1555658636-6e4a36218be7?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1543007630-9710e4a00a20?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1567696911980-2eed69a46042?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1504279577054-acfeccf8fc52?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1572116469696-31de0f17cc34?w=600&auto=format&fit=crop",
+  "https://images.unsplash.com/photo-1600891964092-4316c288032e?w=600&auto=format&fit=crop",
+];
+
+function getPubImage(pub) {
+  if (pub.user_photo_url) return pub.user_photo_url;
+  if (pub.image_url) return pub.image_url;
+  // Deterministic fallback based on pub name
+  let hash = 0;
+  for (let i = 0; i < pub.name.length; i++) hash = pub.name.charCodeAt(i) + ((hash << 5) - hash);
+  return FALLBACK_IMAGES[Math.abs(hash) % FALLBACK_IMAGES.length];
+}
+
 export default function PubCard({ pub, index, isFavourite, onToggleFavourite, weather, isLoadingWeather }) {
   return (
     <motion.div
@@ -15,7 +35,7 @@ export default function PubCard({ pub, index, isFavourite, onToggleFavourite, we
       <Card className="overflow-hidden border border-border/60 hover:border-primary/30 transition-all duration-300 hover:shadow-lg hover:shadow-primary/5 group">
         <div className="relative h-44 overflow-hidden">
           <img
-            src={pub.image_url}
+            src={getPubImage(pub)}
             alt={pub.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
