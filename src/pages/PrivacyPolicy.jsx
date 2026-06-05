@@ -7,10 +7,10 @@ export default function PrivacyPolicy() {
         <div className="space-y-6 text-foreground">
           <section>
             <h2 className="font-display text-2xl font-semibold mb-3">1. Information We Collect</h2>
-            <p className="text-muted-foreground leading-relaxed">
-              We collect information you provide directly, such as your name and email when you create an account or submit reviews. 
-              We also collect location data (latitude/longitude) when you search for pubs, and automatically collect device information 
-              like IP address and browser type.
+            <p className="text-muted-foreground leading-relaxed">We collect information you provide directly, such as your name and email when submit reviews. We also collect location data (latitude/longitude) when you search for pubs, and automatically collect device information like IP address and browser type.
+
+
+
             </p>
           </section>
 
